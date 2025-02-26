@@ -1,0 +1,47 @@
+name: "eurojackpot-analysis"
+title: "Eurojackpot Analysis"
+description: "Statistical analysis of Eurojackpot lottery results"
+output_dir: "docs"
+exclude: ["analysis.rmd"]
+navbar:
+  title: "Eurojackpot Analysis"
+  type: inverse
+  left:
+    - text: "Home"
+      icon: fa-home
+      href: index.html
+    - text: "Data Overview"
+      icon: fa-database
+      href: data-overview.html
+    - text: "Frequency Analysis"
+      icon: fa-chart-bar
+      href: frequency-analysis.html
+    - text: "Time Series"
+      icon: fa-chart-line
+      href: time-series.html
+    - text: "Number Patterns"
+      icon: fa-puzzle-piece
+      href: number-patterns.html
+  right:
+    - icon: fa-github
+      href: https://github.com/eonurk/eurojackpot
+
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: hide
+    css: styles.css
+    includes:
+      in_header: header.html
+      after_body: footer.html
+    self_contained: false
+    lib_dir: site_libs
+    df_print: paged
+    fig_width: 10
+    fig_height: 6
+    fig_caption: true

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data Overview</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Eurojackpot Analysis</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="data-overview.html">
+    <span class="fa fa-database"></span>
+     
+    Data Overview
+  </a>
+</li>
+<li>
+  <a href="frequency-analysis.html">
+    <span class="fa fa-chart-bar"></span>
+     
+    Frequency Analysis
+  </a>
+</li>
+<li>
+  <a href="time-series.html">
+    <span class="fa fa-chart-line"></span>
+     
+    Time Series
+  </a>
+</li>
+<li>
+  <a href="number-patterns.html">
+    <span class="fa fa-puzzle-piece"></span>
+     
+    Number Patterns
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/eonurk/eurojackpot">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Data Overview</h1>
+
+</div>
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Read the CSV file</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;eurojackpot_results.csv&quot;</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Convert date format to day, month, year</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>results<span class="sc">$</span>draw_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(results<span class="sc">$</span>draw_date)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>results<span class="sc">$</span>day <span class="ot">&lt;-</span> <span class="fu">format</span>(results<span class="sc">$</span>draw_date, <span class="st">&quot;%d&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>results<span class="sc">$</span>month <span class="ot">&lt;-</span> <span class="fu">format</span>(results<span class="sc">$</span>draw_date, <span class="st">&quot;%m&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>results<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">format</span>(results<span class="sc">$</span>draw_date, <span class="st">&quot;%Y&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Split main numbers into separate columns</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>main_numbers_split <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(<span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;&quot;</span>, results<span class="sc">$</span>main_numbers), <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>main_numbers_matrix <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, main_numbers_split)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu">colnames</span>(main_numbers_matrix) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">cbind</span>(results, main_numbers_matrix)</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co"># Split euro numbers into separate columns</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>euro_numbers_split <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(<span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;&quot;</span>, results<span class="sc">$</span>euro_numbers), <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>euro_numbers_matrix <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, euro_numbers_split)</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="fu">colnames</span>(euro_numbers_matrix) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;euro_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">cbind</span>(results, euro_numbers_matrix)</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co"># Convert number columns to numeric</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="cf">for</span> (col <span class="cf">in</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), <span class="fu">paste0</span>(<span class="st">&quot;euro_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>))) {</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>    results[[col]] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(results[[col]])</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>}</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="co"># View the first few rows of the processed data</span></span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="co"># head(results)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Summary of the dataset</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Create a data frame with summary information</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>summary_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="at">Metric =</span> <span class="fu">c</span>(<span class="st">&quot;Total number of draws&quot;</span>, <span class="st">&quot;Date range&quot;</span>, <span class="st">&quot;Number of years covered&quot;</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="at">Value =</span> <span class="fu">c</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>        <span class="fu">nrow</span>(results),</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>        <span class="fu">paste</span>(<span class="fu">min</span>(results<span class="sc">$</span>draw_date), <span class="st">&quot;to&quot;</span>, <span class="fu">max</span>(results<span class="sc">$</span>draw_date)),</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>        <span class="fu">length</span>(<span class="fu">unique</span>(results<span class="sc">$</span>year))</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    )</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co"># Display the summary using kable</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(summary_df,</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;Dataset Summary&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Metric&quot;</span>, <span class="st">&quot;Value&quot;</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Dataset Summary</caption>
+<thead>
+<tr class="header">
+<th align="left">Metric</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Total number of draws</td>
+<td align="left">828</td>
+</tr>
+<tr class="even">
+<td align="left">Date range</td>
+<td align="left">2012-03-23 to 2025-02-25</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of years covered</td>
+<td align="left">14</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Distribution of draws by year</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>yearly_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(results<span class="sc">$</span>year)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">barplot</span>(yearly_counts,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">&quot;Number of Draws by Year&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Count&quot;</span>, <span class="at">col =</span> <span class="st">&quot;steelblue&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="data-overview_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+<div id="number-frequency-analysis" class="section level2">
+<h2>Number Frequency Analysis</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Analyze frequency of main numbers</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>main_numbers_freq <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">unlist</span>(results[, <span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)]))</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>main_numbers_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="at">number =</span> <span class="fu">as.numeric</span>(<span class="fu">names</span>(main_numbers_freq)),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="at">frequency =</span> <span class="fu">as.numeric</span>(main_numbers_freq)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>main_numbers_df <span class="ot">&lt;-</span> main_numbers_df[<span class="fu">order</span>(main_numbers_df<span class="sc">$</span>number), ]</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># Analyze frequency of euro numbers</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>euro_numbers_freq <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">unlist</span>(results[, <span class="fu">paste0</span>(<span class="st">&quot;euro_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]))</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>euro_numbers_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="at">number =</span> <span class="fu">as.numeric</span>(<span class="fu">names</span>(euro_numbers_freq)),</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="at">frequency =</span> <span class="fu">as.numeric</span>(euro_numbers_freq)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>)</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>euro_numbers_df <span class="ot">&lt;-</span> euro_numbers_df[<span class="fu">order</span>(euro_numbers_df<span class="sc">$</span>number), ]</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co"># Plot main numbers frequency</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="fu">barplot</span>(main_numbers_df<span class="sc">$</span>frequency,</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    <span class="at">names.arg =</span> main_numbers_df<span class="sc">$</span>number,</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">&quot;Main Numbers Frequency&quot;</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Number&quot;</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Frequency&quot;</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;skyblue&quot;</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    <span class="at">las =</span> <span class="dv">2</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="data-overview_files/figure-html/unnamed-chunk-3-1.png" width="960" /></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Plot euro numbers frequency</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">barplot</span>(euro_numbers_df<span class="sc">$</span>frequency,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="at">names.arg =</span> euro_numbers_df<span class="sc">$</span>number,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">&quot;Euro Numbers Frequency&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Number&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Frequency&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;salmon&quot;</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="at">las =</span> <span class="dv">2</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="data-overview_files/figure-html/unnamed-chunk-3-2.png" width="960" /></p>
+</div>
+<div id="pair-analysis" class="section level2">
+<h2>Pair Analysis</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Function to count pairs of numbers</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>count_pairs <span class="ot">&lt;-</span> <span class="cf">function</span>(data, columns) {</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    pairs <span class="ot">&lt;-</span> <span class="fu">combn</span>(columns, <span class="dv">2</span>, <span class="cf">function</span>(cols) {</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>        pair_data <span class="ot">&lt;-</span> data[, cols]</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">paste</span>(pair_data[, <span class="dv">1</span>], pair_data[, <span class="dv">2</span>], <span class="at">sep =</span> <span class="st">&quot;-&quot;</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    }, <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    all_pairs <span class="ot">&lt;-</span> <span class="fu">unlist</span>(pairs)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    pair_counts <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">table</span>(all_pairs), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    <span class="fu">return</span>(pair_counts)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>}</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co"># Count main number pairs</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>main_pairs <span class="ot">&lt;-</span> <span class="fu">count_pairs</span>(results, <span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>))</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>top_main_pairs <span class="ot">&lt;-</span> <span class="fu">head</span>(main_pairs, <span class="dv">10</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co"># Count euro number pairs</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>euro_pairs <span class="ot">&lt;-</span> <span class="fu">count_pairs</span>(results, <span class="fu">paste0</span>(<span class="st">&quot;euro_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>))</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co"># Plot top main number pairs</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.1</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="fu">barplot</span>(top_main_pairs,</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">&quot;Top 10 Main Number Pairs&quot;</span>,</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Frequency&quot;</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;lightgreen&quot;</span>,</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    <span class="at">las =</span> <span class="dv">2</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>)</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Number Pairs&quot;</span>, <span class="at">side =</span> <span class="dv">1</span>, <span class="at">line =</span> <span class="dv">6</span>)</span></code></pre></div>
+<p><img src="data-overview_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Plot euro number pairs</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">barplot</span>(euro_pairs,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">&quot;Euro Number Pairs&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Number Pairs&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Frequency&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;lightpink&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">las =</span> <span class="dv">2</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="data-overview_files/figure-html/unnamed-chunk-4-2.png" width="960" /></p>
+</div>
+<div id="odd-even-distribution" class="section level2">
+<h2>Odd-Even Distribution</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Calculate odd-even distribution for main numbers</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>results<span class="sc">$</span>main_odd_count <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(results[, <span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)] <span class="sc">%%</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>results<span class="sc">$</span>main_even_count <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> results<span class="sc">$</span>main_odd_count</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co"># Calculate odd-even distribution for euro numbers</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>results<span class="sc">$</span>euro_odd_count <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(results[, <span class="fu">paste0</span>(<span class="st">&quot;euro_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)] <span class="sc">%%</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>results<span class="sc">$</span>euro_even_count <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">-</span> results<span class="sc">$</span>euro_odd_count</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co"># Create a table of odd-even combinations for main numbers</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>odd_even_table <span class="ot">&lt;-</span> <span class="fu">table</span>(results<span class="sc">$</span>main_odd_count)</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>odd_even_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    <span class="at">odd_count =</span> <span class="fu">as.numeric</span>(<span class="fu">names</span>(odd_even_table)),</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>    <span class="at">frequency =</span> <span class="fu">as.numeric</span>(odd_even_table)</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co"># Plot odd-even distribution for main numbers</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="fu">barplot</span>(odd_even_df<span class="sc">$</span>frequency,</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>    <span class="at">names.arg =</span> <span class="fu">paste</span>(odd_even_df<span class="sc">$</span>odd_count, <span class="st">&quot;odd,&quot;</span>, <span class="dv">5</span> <span class="sc">-</span> odd_even_df<span class="sc">$</span>odd_count, <span class="st">&quot;even&quot;</span>),</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">&quot;Odd-Even Distribution in Main Numbers&quot;</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Distribution&quot;</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Frequency&quot;</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;orchid&quot;</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="data-overview_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Plot odd-even distribution for euro numbers</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>euro_odd_even_table <span class="ot">&lt;-</span> <span class="fu">table</span>(results<span class="sc">$</span>euro_odd_count)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">barplot</span>(euro_odd_even_table,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="at">names.arg =</span> <span class="fu">paste</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>        <span class="fu">as.numeric</span>(<span class="fu">names</span>(euro_odd_even_table)), <span class="st">&quot;odd,&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>        <span class="dv">2</span> <span class="sc">-</span> <span class="fu">as.numeric</span>(<span class="fu">names</span>(euro_odd_even_table)), <span class="st">&quot;even&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>    ),</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">&quot;Odd-Even Distribution in Euro Numbers&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Distribution&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Frequency&quot;</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;gold&quot;</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="data-overview_files/figure-html/unnamed-chunk-5-2.png" width="960" /></p>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <p class="text-muted">© 2025 Eurojackpot Analysis | Created with <a href="https://rmarkdown.rstudio.com">R Markdown</a></p>
+      </div>
+    </div>
+  </div>
+</footer> 
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

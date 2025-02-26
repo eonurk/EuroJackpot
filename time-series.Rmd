@@ -1,0 +1,168 @@
+---
+title: "Time Series Analysis"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggalluvial)
+
+# Read the data (assuming this was already done in data-overview.Rmd)
+# If you're using this page independently, uncomment and run the data loading code
+results <- read.csv("eurojackpot_results.csv", stringsAsFactors = FALSE)
+
+
+# Convert date format to day, month, year
+results$draw_date <- as.Date(results$draw_date)
+results$day <- format(results$draw_date, "%d")
+results$month <- format(results$draw_date, "%m")
+results$year <- format(results$draw_date, "%Y")
+
+# Split main numbers into separate columns
+main_numbers_split <- strsplit(gsub("\"", "", results$main_numbers), ",")
+main_numbers_matrix <- do.call(rbind, main_numbers_split)
+colnames(main_numbers_matrix) <- paste0("main_", 1:5)
+results <- cbind(results, main_numbers_matrix)
+
+# Split euro numbers into separate columns
+euro_numbers_split <- strsplit(gsub("\"", "", results$euro_numbers), ",")
+euro_numbers_matrix <- do.call(rbind, euro_numbers_split)
+colnames(euro_numbers_matrix) <- paste0("euro_", 1:2)
+results <- cbind(results, euro_numbers_matrix)
+
+# Convert number columns to numeric
+for (col in c(paste0("main_", 1:5), paste0("euro_", 1:2))) {
+    results[[col]] <- as.numeric(results[[col]])
+}
+
+```
+
+## Average Sum 
+
+```{r}
+library(ggplot2)
+
+# Calculate sum of main numbers for each draw
+results$main_sum <- rowSums(results[, paste0("main_", 1:5)])
+
+# Calculate average of main numbers for each draw
+results$main_avg <- results$main_sum / 5
+
+# Plot the sum of main numbers over time
+ggplot(results, aes(x = draw_date, y = main_sum)) +
+    geom_line(color = "blue") +
+    geom_smooth(method = "loess", color = "red") +
+    labs(
+        title = "Sum of Main Numbers Over Time",
+        x = "Date",
+        y = "Sum of Main Numbers"
+    ) +
+    theme_minimal()
+
+# Monthly average of main numbers
+results$month_year <- format(results$draw_date, "%Y-%m")
+monthly_avg <- aggregate(main_avg ~ month_year, data = results, FUN = mean)
+monthly_avg$date <- as.Date(paste0(monthly_avg$month_year, "-01"))
+
+ggplot(monthly_avg, aes(x = date, y = main_avg)) +
+    geom_line(color = "darkgreen") +
+    geom_point() +
+    labs(
+        title = "Monthly Average of Main Numbers",
+        x = "Month",
+        y = "Average Value"
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+## Numbers Over Time
+
+```{r}
+# Create a plot of the main numbers over time
+main_numbers_time <- results %>%
+    filter(year >= 2024 & year <= 2025) %>%
+    select(draw_date, main_1, main_2, main_3, main_4, main_5) %>%
+    pivot_longer(
+        cols = starts_with("main_"),
+        names_to = "position",
+        values_to = "number"
+    )
+
+ggplot(main_numbers_time, aes(x = draw_date, y = number, color = position)) +
+    geom_line(alpha = 0.7) +
+    # geom_smooth(se=F) +
+    geom_point(size = 1) +
+    scale_color_brewer(palette = "Set1", name = "Ball Position") +
+    scale_y_continuous(breaks = seq(0, 50, by = 5)) +
+    theme_minimal() +
+    labs(
+        title = "Main Numbers Over Time (2022-2025)",
+        subtitle = "Tracking the 5 main numbers drawn in each Eurojackpot draw",
+        x = "Draw Date",
+        y = "Number Value (1-50)"
+    ) +
+    theme(
+        legend.position = "bottom",
+        panel.grid.minor = element_blank()
+    )
+```
+
+## Standard Deviation Over Time
+
+```{r}
+std_dev_over_time <- results %>%
+    filter(year >= 2024 & year <= 2025) %>%
+    select(draw_date, main_1, main_2, main_3, main_4, main_5) %>%
+    rowwise() %>%
+    mutate(std_dev = sd(c(main_1, main_2, main_3, main_4, main_5))) %>%
+    ungroup()
+
+ggplot(std_dev_over_time, aes(x = draw_date, y = std_dev)) +
+    geom_line(color = "steelblue") +
+    geom_point(size = 1, color = "steelblue") +
+    geom_smooth(method = "loess", se = TRUE, color = "red", linetype = "dashed") +
+    theme_minimal() +
+    labs(
+        title = "Standard Deviation of Main Numbers Over Time (2022-2025)",
+        subtitle = "Higher values indicate more spread out numbers in a draw",
+        x = "Draw Date",
+        y = "Standard Deviation"
+    ) +
+    scale_y_continuous(limits = c(0, NA)) +
+    theme(
+        panel.grid.minor = element_blank()
+    )
+```
+
+## Seasonal Patterns
+
+```{r}
+# Analyze if there are any seasonal patterns
+monthly_analysis <- results %>%
+    group_by(month) %>%
+    summarise(
+        draws = n(),
+        avg_main_1 = mean(main_1),
+        avg_main_5 = mean(main_5),
+        avg_euro_1 = mean(euro_1),
+        avg_euro_2 = mean(euro_2),
+        avg_std_dev = mean(sd(c(main_1, main_2, main_3, main_4, main_5)), na.rm = TRUE)
+    ) %>%
+    mutate(month_name = month.name[as.numeric(month)])
+
+# Plot monthly patterns
+ggplot(monthly_analysis, aes(x = factor(month_name, levels = month.name), y = avg_std_dev)) +
+    geom_bar(stat = "identity", fill = "steelblue") +
+    theme_minimal() +
+    labs(
+        title = "Average Standard Deviation of Main Numbers by Month",
+        x = "Month",
+        y = "Average Standard Deviation"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+``` 

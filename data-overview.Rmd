@@ -1,0 +1,189 @@
+---
+title: "Data Overview"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+# Read the CSV file
+results <- read.csv("eurojackpot_results.csv", stringsAsFactors = FALSE)
+
+# Convert date format to day, month, year
+results$draw_date <- as.Date(results$draw_date)
+results$day <- format(results$draw_date, "%d")
+results$month <- format(results$draw_date, "%m")
+results$year <- format(results$draw_date, "%Y")
+
+# Split main numbers into separate columns
+main_numbers_split <- strsplit(gsub("\"", "", results$main_numbers), ",")
+main_numbers_matrix <- do.call(rbind, main_numbers_split)
+colnames(main_numbers_matrix) <- paste0("main_", 1:5)
+results <- cbind(results, main_numbers_matrix)
+
+# Split euro numbers into separate columns
+euro_numbers_split <- strsplit(gsub("\"", "", results$euro_numbers), ",")
+euro_numbers_matrix <- do.call(rbind, euro_numbers_split)
+colnames(euro_numbers_matrix) <- paste0("euro_", 1:2)
+results <- cbind(results, euro_numbers_matrix)
+
+# Convert number columns to numeric
+for (col in c(paste0("main_", 1:5), paste0("euro_", 1:2))) {
+    results[[col]] <- as.numeric(results[[col]])
+}
+
+# View the first few rows of the processed data
+# head(results)
+```
+
+```{r}
+# Summary of the dataset
+# Create a data frame with summary information
+summary_df <- data.frame(
+    Metric = c("Total number of draws", "Date range", "Number of years covered"),
+    Value = c(
+        nrow(results),
+        paste(min(results$draw_date), "to", max(results$draw_date)),
+        length(unique(results$year))
+    )
+)
+
+# Display the summary using kable
+knitr::kable(summary_df,
+    caption = "Dataset Summary",
+    col.names = c("Metric", "Value"),
+    align = c("l", "l")
+)
+
+# Distribution of draws by year
+yearly_counts <- table(results$year)
+barplot(yearly_counts,
+    main = "Number of Draws by Year",
+    xlab = "Year", ylab = "Count", col = "steelblue"
+)
+```
+
+## Number Frequency Analysis
+
+```{r}
+# Analyze frequency of main numbers
+main_numbers_freq <- table(unlist(results[, paste0("main_", 1:5)]))
+main_numbers_df <- data.frame(
+    number = as.numeric(names(main_numbers_freq)),
+    frequency = as.numeric(main_numbers_freq)
+)
+main_numbers_df <- main_numbers_df[order(main_numbers_df$number), ]
+
+# Analyze frequency of euro numbers
+euro_numbers_freq <- table(unlist(results[, paste0("euro_", 1:2)]))
+euro_numbers_df <- data.frame(
+    number = as.numeric(names(euro_numbers_freq)),
+    frequency = as.numeric(euro_numbers_freq)
+)
+euro_numbers_df <- euro_numbers_df[order(euro_numbers_df$number), ]
+
+# Plot main numbers frequency
+barplot(main_numbers_df$frequency,
+    names.arg = main_numbers_df$number,
+    main = "Main Numbers Frequency",
+    xlab = "Number",
+    ylab = "Frequency",
+    col = "skyblue",
+    las = 2
+)
+
+# Plot euro numbers frequency
+barplot(euro_numbers_df$frequency,
+    names.arg = euro_numbers_df$number,
+    main = "Euro Numbers Frequency",
+    xlab = "Number",
+    ylab = "Frequency",
+    col = "salmon",
+    las = 2
+)
+```
+
+## Pair Analysis
+
+```{r}
+# Function to count pairs of numbers
+count_pairs <- function(data, columns) {
+    pairs <- combn(columns, 2, function(cols) {
+        pair_data <- data[, cols]
+        return(paste(pair_data[, 1], pair_data[, 2], sep = "-"))
+    }, simplify = FALSE)
+
+    all_pairs <- unlist(pairs)
+    pair_counts <- sort(table(all_pairs), decreasing = TRUE)
+    return(pair_counts)
+}
+
+# Count main number pairs
+main_pairs <- count_pairs(results, paste0("main_", 1:5))
+top_main_pairs <- head(main_pairs, 10)
+
+# Count euro number pairs
+euro_pairs <- count_pairs(results, paste0("euro_", 1:2))
+
+# Plot top main number pairs
+par(mar = c(8, 4, 4, 2) + 0.1)
+barplot(top_main_pairs,
+    main = "Top 10 Main Number Pairs",
+    xlab = "",
+    ylab = "Frequency",
+    col = "lightgreen",
+    las = 2
+)
+mtext("Number Pairs", side = 1, line = 6)
+
+# Plot euro number pairs
+barplot(euro_pairs,
+    main = "Euro Number Pairs",
+    xlab = "Number Pairs",
+    ylab = "Frequency",
+    col = "lightpink",
+    las = 2
+)
+```
+
+## Odd-Even Distribution
+
+```{r}
+# Calculate odd-even distribution for main numbers
+results$main_odd_count <- rowSums(results[, paste0("main_", 1:5)] %% 2 == 1)
+results$main_even_count <- 5 - results$main_odd_count
+
+# Calculate odd-even distribution for euro numbers
+results$euro_odd_count <- rowSums(results[, paste0("euro_", 1:2)] %% 2 == 1)
+results$euro_even_count <- 2 - results$euro_odd_count
+
+# Create a table of odd-even combinations for main numbers
+odd_even_table <- table(results$main_odd_count)
+odd_even_df <- data.frame(
+    odd_count = as.numeric(names(odd_even_table)),
+    frequency = as.numeric(odd_even_table)
+)
+
+# Plot odd-even distribution for main numbers
+barplot(odd_even_df$frequency,
+    names.arg = paste(odd_even_df$odd_count, "odd,", 5 - odd_even_df$odd_count, "even"),
+    main = "Odd-Even Distribution in Main Numbers",
+    xlab = "Distribution",
+    ylab = "Frequency",
+    col = "orchid"
+)
+
+# Plot odd-even distribution for euro numbers
+euro_odd_even_table <- table(results$euro_odd_count)
+barplot(euro_odd_even_table,
+    names.arg = paste(
+        as.numeric(names(euro_odd_even_table)), "odd,",
+        2 - as.numeric(names(euro_odd_even_table)), "even"
+    ),
+    main = "Odd-Even Distribution in Euro Numbers",
+    xlab = "Distribution",
+    ylab = "Frequency",
+    col = "gold"
+)
+``` 

@@ -1,0 +1,194 @@
+/* Main styling */
+body {
+	font-family: "Nunito", sans-serif;
+	line-height: 1.6;
+	margin: 0;
+	padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 700;
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+}
+
+/* Navbar styling */
+.navbar {
+	margin-bottom: 25px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	background: #ff9800; /* Slightly darker orange for contrast */
+}
+
+/* Content styling */
+.main-container {
+	max-width: 1200px !important;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+}
+
+.container-fluid {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.toc-content {
+	padding-left: 30px;
+	padding-right: 30px;
+	width: 100% !important;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* Adjust the TOC width for full-screen layout */
+div.tocify,
+#TOC {
+	width: 100%;
+	position: relative;
+	top: 0;
+	max-height: none;
+	margin-bottom: 30px;
+	border-left: 3px solid #ff9800;
+	padding-left: 15px;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 4px;
+	overflow-y: visible;
+	max-width: 100%;
+}
+
+/* For pages with TOC, adjust the content area */
+.row > .col-md-9 {
+	width: 100%;
+	max-width: 100%;
+}
+
+/* Footer styling */
+.footer {
+	margin-top: 50px;
+	padding: 20px 0;
+	border-top: 1px solid #e9ecef;
+	text-align: center;
+	color: white;
+	width: 100%;
+}
+
+/* Code blocks */
+pre {
+	border-radius: 4px;
+	border: 1px solid #e9ecef;
+	background-color: #f8f9fa;
+}
+
+/* Figures and plots */
+.figure {
+	margin: 25px 0;
+	text-align: center;
+}
+
+.figure img {
+	max-width: 100%;
+	height: auto;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+}
+
+/* Tables */
+.pagedtable {
+	margin: 25px 0;
+	border-radius: 4px;
+	overflow: hidden;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	max-width: 100%;
+}
+
+table {
+	width: auto !important;
+	max-width: 100%;
+	overflow-x: auto;
+	display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.main-container {
+		padding: 15px;
+	}
+
+	div.tocify {
+		width: 100%;
+		position: relative;
+		top: 0;
+	}
+
+	.row > .col-md-9 {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.toc-content {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+}
+
+/* Fix for the navigation buttons */
+.navigation-buttons {
+	margin-top: 40px;
+	text-align: right;
+}
+
+.next-button {
+	background-color: #ff9800;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+}
+
+.next-button:hover {
+	background-color: #e68a00;
+}
+
+/* Info box styling */
+.info-box {
+	background-color: rgba(255, 152, 0, 0.1);
+	border-left: 4px solid #ff9800;
+	padding: 15px;
+	margin: 20px 0;
+	border-radius: 4px;
+}
+
+.table-responsive {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	margin-bottom: 1rem;
+}
+
+@media print {
+	.navbar,
+	.navigation-buttons,
+	.footer {
+		display: none;
+	}
+
+	body {
+		font-size: 12pt;
+	}
+
+	.main-container {
+		box-shadow: none;
+		border: none;
+	}
+}
