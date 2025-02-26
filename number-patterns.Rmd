@@ -169,3 +169,8 @@ ggplot(heatmap_data, aes(x = pair, y = difference, fill = percentage)) +
     theme(axis.text.x = element_text(angle = 0)) +
     facet_wrap(~year)
 ``` 
+
+
+<div class="navigation-buttons">
+  <a href="time-series.html" class="prev-button"><i class="fa fa-arrow-left"></i> Previous: Time Series</a>
+</div>

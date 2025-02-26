@@ -37,7 +37,6 @@ results <- cbind(results, euro_numbers_matrix)
 for (col in c(paste0("main_", 1:5), paste0("euro_", 1:2))) {
     results[[col]] <- as.numeric(results[[col]])
 }
-
 ```
 
 ## Average Sum 
@@ -166,3 +165,8 @@ ggplot(monthly_analysis, aes(x = factor(month_name, levels = month.name), y = av
     ) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ``` 
+
+<div class="navigation-buttons">
+  <a href="frequency-analysis.html" class="prev-button"><i class="fa fa-arrow-left"></i> Previous: Frequency Analysis</a>
+  <a href="number-patterns.html" class="next-button">Next: Number Patterns <i class="fa fa-arrow-right"></i></a>
+</div>

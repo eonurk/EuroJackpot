@@ -187,3 +187,8 @@ barplot(euro_odd_even_table,
     col = "gold"
 )
 ``` 
+
+<div class="navigation-buttons">
+  <a href="index.html" class="prev-button"><i class="fa fa-arrow-left"></i> Previous: Home</a>
+  <a href="frequency-analysis.html" class="next-button">Next: Frequency Analysis <i class="fa fa-arrow-right"></i></a>
+</div>

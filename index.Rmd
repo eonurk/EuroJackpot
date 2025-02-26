@@ -35,28 +35,3 @@ All visualizations and calculations are implemented using R and its data visuali
 <div class="navigation-buttons">
   <a href="data-overview.html" class="next-button">Next: Data Overview <i class="fa fa-arrow-right"></i></a>
 </div>
-
-<style>
-.navigation-buttons {
-  margin-top: 40px;
-  text-align: right;
-}
-
-.next-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.next-button:hover {
-  background-color: #45a049;
-}
-</style>

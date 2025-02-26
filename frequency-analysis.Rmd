@@ -286,3 +286,8 @@ knitr::kable(top_euro_numbers, digits = 2)
 
 knitr::kable(bottom_euro_numbers, digits = 2)
 ``` 
+
+<div class="navigation-buttons">
+  <a href="data-overview.html" class="prev-button"><i class="fa fa-arrow-left"></i> Previous: Data Overview</a>
+  <a href="time-series.html" class="next-button">Next: Time Series <i class="fa fa-arrow-right"></i></a>
+</div>
