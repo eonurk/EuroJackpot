@@ -1,9 +1,95 @@
 <footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <p class="text-muted">© 2025 Eurojackpot Analysis | Created with <a href="https://rmarkdown.rstudio.com">R Markdown</a></p>
-      </div>
-    </div>
-  </div>
-</footer> 
+  <div class="footer-brand">Eurojackpot Analysis</div>
+  <p class="footer-note">
+    Every chart on this site is generated from the raw draw history with reproducible R code —
+    click any “Code” button to see exactly how. Lottery draws are independent random events:
+    nothing here can predict winning numbers, and it never spends better than it entertains.
+  </p>
+  <p>© 2025 Eurojackpot Analysis · Built with <a href="https://rmarkdown.rstudio.com">R Markdown</a> ·
+    <a href="https://github.com/eonurk/eurojackpot">Source on GitHub</a></p>
+</footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* reading progress bar */
+  var bar = document.createElement("div");
+  bar.id = "ej-progress";
+  document.body.appendChild(bar);
+  var ticking = false;
+  function paint() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    ticking = false;
+  }
+  document.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(paint); }
+  }, { passive: true });
+  paint();
+
+  /* highlight the current page in the navbar */
+  var here = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".navbar a[href]").forEach(function (a) {
+    if (a.getAttribute("href") === here) {
+      var li = a.closest("li");
+      if (li) li.classList.add("active");
+    }
+  });
+
+  /* wrap tables so they scroll sideways on small screens */
+  document.querySelectorAll(".main-container table").forEach(function (t) {
+    if (t.closest(".table-scroll") || t.closest(".pagedtable")) return;
+    var w = document.createElement("div");
+    w.className = "table-scroll";
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  if (reduced || !("IntersectionObserver" in window)) return;
+
+  /* scroll-reveal */
+  var sel = [
+    ".main-container .section > h2", ".main-container .section > h3",
+    ".main-container .section > p", ".main-container > p",
+    ".main-container .table-scroll", ".main-container .info-box",
+    ".main-container .pull-stat", ".main-container pre",
+    ".stat-card", ".page-card", ".navigation-buttons"
+  ].join(", ");
+  var els = [].slice.call(document.querySelectorAll(sel));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -7% 0px", threshold: 0.04 });
+  els.forEach(function (el, i) {
+    el.classList.add("rv");
+    el.style.transitionDelay = (i % 4) * 60 + "ms";
+    io.observe(el);
+  });
+
+  /* animated counters: <span class="count-up" data-target="828">828</span> */
+  var counters = [].slice.call(document.querySelectorAll(".count-up"));
+  if (counters.length) {
+    var io2 = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io2.unobserve(e.target);
+        var el = e.target;
+        var target = parseFloat(el.getAttribute("data-target") || "0");
+        var t0 = null, dur = 1600;
+        function tick(ts) {
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toLocaleString("en-US");
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { el.textContent = "0"; io2.observe(el); });
+  }
+})();
+</script>

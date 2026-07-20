@@ -1,38 +1,78 @@
 ---
-title: "Eurojackpot Statistical Analysis"
+pagetitle: "Eurojackpot Analysis — The Numbers Behind Europe's €120M Obsession"
+output:
+  html_document:
+    toc: false
 ---
 
-## 🎮 What is Eurojackpot?
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+results <- read.csv("eurojackpot_results.csv", stringsAsFactors = FALSE)
+results$draw_date <- as.Date(results$draw_date)
+n_draws <- nrow(results)
+n_years <- length(unique(format(results$draw_date, "%Y")))
+latest <- results[which.max(results$draw_date), ]
+latest_main <- sort(as.numeric(strsplit(gsub('"', "", latest$main_numbers), ",")[[1]]))
+latest_euro <- sort(as.numeric(strsplit(gsub('"', "", latest$euro_numbers), ",")[[1]]))
+odds <- choose(50, 5) * choose(12, 2)
+balls_drawn <- n_draws * 7
+```
 
-Eurojackpot is one of Europe's most popular transnational lottery games, launched in 2012 and now played across 18 European countries. The game features a simple yet challenging format: players must match **5 numbers from a pool of 50** plus **2 Euro numbers from a pool of 12** to win the jackpot. Draws take place every Tuesday and Friday in Helsinki, with jackpots starting at €10 million and capable of rolling over to a maximum of €120 million.
+<div class="ej-hero">
+<p class="ej-kicker">Fourteen years · `r format(n_draws, big.mark = ",")` draws · one honest question</p>
+<h1 class="ej-headline">The numbers behind Europe's <span class="ej-accent">€120&nbsp;million</span> obsession</h1>
+<p class="ej-deck">Eurojackpot has been drawing balls in Helsinki twice a week since 2012. This site puts every single draw under a statistical microscope — the patterns, the myths, and the one thing you can actually predict.</p>
 
-## 📊 About This Analysis
+```{r balls, results='asis'}
+cat('<div class="ej-balls" aria-label="Most recent draw in the dataset">\n')
+cat(paste0('<span class="ball">', latest_main, "</span>"), sep = "\n")
+cat('<span class="ball plus">+</span>\n')
+cat(paste0('<span class="ball euro">', latest_euro, "</span>"), sep = "\n")
+cat("</div>\n")
+```
 
-This project examines historical Eurojackpot draw data through statistical analysis. We'll explore:
+<p class="ej-balls-caption">The most recent draw in this dataset — `r format(latest$draw_date, "%B %e, %Y")`</p>
 
-- **Historical Draw Data** - Comprehensive examination of all Eurojackpot draws since inception
-- **Number Frequencies** - Which numbers have appeared most and least frequently over time
-- **Distribution Patterns** - How the drawn numbers distribute across the possible range
-- **Statistical Observations** - Interesting statistical properties of the historical results
-
-## 🔍 Analytical Approach
-
-Our analysis employs descriptive statistics and data visualization techniques to examine the Eurojackpot draw history. We present factual observations about past draws while acknowledging the fundamental principle that each draw is an independent random event.
-
-All visualizations and calculations are implemented using R and its data visualization packages, providing both statistical detail and visual clarity.
-
-<div class="info-box">
-<strong>Important Note:</strong> This analysis examines historical data only. Lottery draws are designed to be random events, and past results cannot predict future outcomes. This content is provided purely for informational and educational purposes.
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-value"><span class="count-up" data-target="`r n_draws`">`r format(n_draws, big.mark = ",")`</span></div><div class="stat-label">Draws analysed</div></div>
+<div class="stat-card"><div class="stat-value"><span class="count-up" data-target="`r balls_drawn`">`r format(balls_drawn, big.mark = ",")`</span></div><div class="stat-label">Balls drawn</div></div>
+<div class="stat-card"><div class="stat-value"><span class="count-up" data-target="`r n_years`">`r n_years`</span></div><div class="stat-label">Years covered</div></div>
+<div class="stat-card"><div class="stat-value">1<span class="stat-unit"> in </span><span class="count-up" data-target="`r odds`">`r format(odds, big.mark = ",")`</span></div><div class="stat-label">Jackpot odds</div></div>
+</div>
 </div>
 
-### Content Overview
+## The game, in one paragraph
 
-- **Data Exploration**: Examination of the dataset structure and basic statistics
-- **Number Analysis**: Detailed look at the frequency distribution of drawn numbers
-- **Temporal Observations**: How draw patterns have appeared over different time periods
-- **Statistical Insights**: Notable statistical properties within the historical data
-- **Predicting the Pot**: Formal tests and backtests of popular prediction strategies, the rule changes hiding in the data, and what actually *is* forecastable
+Pick **5 numbers from 50**, add **2 Euro numbers from 12**, and match all seven to win a jackpot that starts at €10 million and climbs to a €120 million cap. Draws happen every Tuesday and Friday in Helsinki, across 18 countries. Since launch the game has quietly changed its own rules twice — a detail that, as you'll see, quietly breaks most casual analyses of it.
+
+<div class="pull-stat"><span class="big">1 in 139,838,160</span><span class="why">Your odds of hitting the jackpot with a single line. You are roughly 100× more likely to be struck by lightning this year.</span></div>
+
+## Inside the data
+
+Five chapters, each built from the raw draw history with reproducible R code — press any "Code" button on the way to see exactly how a figure was made.
+
+<div class="page-cards">
+
+<a class="page-card" href="data-overview.html"><span class="pc-kicker">Chapter 1</span><span class="pc-title">Data Overview</span><span class="pc-desc">The shape of `r format(n_draws, big.mark = ",")` draws: what the dataset holds, how often each number shows up, and which pairs travel together.</span><span class="pc-go">Read chapter →</span></a>
+
+<a class="page-card" href="frequency-analysis.html"><span class="pc-kicker">Chapter 2</span><span class="pc-title">Frequency Analysis</span><span class="pc-desc">"Hot" and "cold" numbers under a microscope — and how big the gap between luckiest and unluckiest ball should be by pure chance.</span><span class="pc-go">Read chapter →</span></a>
+
+<a class="page-card" href="time-series.html"><span class="pc-kicker">Chapter 3</span><span class="pc-title">Time Series</span><span class="pc-desc">Draw sums, spreads and seasons: does the machine drift over fourteen years, or is every wobble just noise wearing a trend costume?</span><span class="pc-go">Read chapter →</span></a>
+
+<a class="page-card" href="number-patterns.html"><span class="pc-kicker">Chapter 4</span><span class="pc-title">Number Patterns</span><span class="pc-desc">The gaps between the five balls in a draw — how tightly they cluster, how often neighbours appear, and what a "typical" ticket looks like.</span><span class="pc-go">Read chapter →</span></a>
+
+<a class="page-card" href="predictive-analysis.html"><span class="pc-kicker">Chapter 5</span><span class="pc-title">Predicting the Next Pot?</span><span class="pc-desc">Every popular prediction strategy, formally backtested against history — plus the one quantity in this game you genuinely <em>can</em> forecast.</span><span class="pc-go">Read chapter →</span></a>
+
+</div>
+
+## How we work
+
+Descriptive statistics, formal hypothesis tests, and walk-forward backtests — visualised, and honest about uncertainty. Where a popular belief fails a test, we say so; where the data genuinely contains structure (it happens!), we show where it comes from.
+
+<div class="info-box">
+<strong>Play-it-straight note:</strong> lottery draws are independent random events. Past results cannot predict future outcomes, and this site will show you precisely <em>why</em> — with tests, not slogans. Everything here is for education and curiosity. If you play, treat the ticket as entertainment, never as an investment.
+</div>
 
 <div class="navigation-buttons">
-  <a href="data-overview.html" class="next-button">Next: Data Overview <i class="fa fa-arrow-right"></i></a>
+  <a href="data-overview.html" class="next-button">Start reading: Data Overview <i class="fa fa-arrow-right"></i></a>
 </div>

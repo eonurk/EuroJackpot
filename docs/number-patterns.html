@@ -38,8 +38,11 @@
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#101010">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -505,133 +508,170 @@ div.tocify {
 </div>
 
 
-<div id="consecutive-number-differences" class="section level2">
-<h2>Consecutive Number Differences</h2>
+<p>What does a <em>typical</em> winning ticket look like? Not the
+numbers themselves — the shape of them: how far apart the five balls
+land, how often two neighbours show up together, whether the machine
+prefers tight clusters or wide scatters. This chapter measures the
+geometry of 828 draws — and, as usual, checks every “pattern” against
+what randomness predicts before anyone gets excited.</p>
+<div id="gaps-between-consecutive-numbers" class="section level2">
+<h2>Gaps Between Consecutive Numbers</h2>
+<p>Sort a draw’s five main numbers and measure the four gaps between
+neighbours. The outer gaps (1→2, 4→5) can stretch wide, while the middle
+gaps stay tighter — a classic signature of order statistics, not of the
+machine’s mood:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Calculate pairwise differences between consecutive numbers</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># For main numbers</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>main_diffs <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>        <span class="at">diff_1_2 =</span> main_2 <span class="sc">-</span> main_1,</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>        <span class="at">diff_2_3 =</span> main_3 <span class="sc">-</span> main_2,</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>        <span class="at">diff_3_4 =</span> main_4 <span class="sc">-</span> main_3,</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>        <span class="at">diff_4_5 =</span> main_5 <span class="sc">-</span> main_4</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="fu">select</span>(draw_date, year, <span class="fu">contains</span>(<span class="st">&quot;diff_&quot;</span>))</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co"># For euro numbers</span></span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>euro_diffs <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>        <span class="at">diff_euro =</span> euro_2 <span class="sc">-</span> euro_1</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>main_diffs <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>        <span class="at">diff_1_2 =</span> main_2 <span class="sc">-</span> main_1,</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>        <span class="at">diff_2_3 =</span> main_3 <span class="sc">-</span> main_2,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>        <span class="at">diff_3_4 =</span> main_4 <span class="sc">-</span> main_3,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>        <span class="at">diff_4_5 =</span> main_5 <span class="sc">-</span> main_4</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="fu">select</span>(draw_date, year, <span class="fu">contains</span>(<span class="st">&quot;diff_&quot;</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>main_diffs_long <span class="ot">&lt;-</span> main_diffs <span class="sc">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>        <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;diff_&quot;</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>        <span class="at">names_to =</span> <span class="st">&quot;pair&quot;</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">&quot;difference&quot;</span></span>
 <span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="fu">select</span>(draw_date, year, diff_euro)</span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co"># Reshape data for visualization</span></span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>main_diffs_long <span class="ot">&lt;-</span> main_diffs <span class="sc">%&gt;%</span></span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>        <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;diff_&quot;</span>),</span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>        <span class="at">names_to =</span> <span class="st">&quot;pair&quot;</span>,</span>
-<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">&quot;difference&quot;</span></span>
-<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">pair =</span> <span class="fu">factor</span>(pair,</span>
-<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;diff_1_2&quot;</span>, <span class="st">&quot;diff_2_3&quot;</span>, <span class="st">&quot;diff_3_4&quot;</span>, <span class="st">&quot;diff_4_5&quot;</span>),</span>
-<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;1→2&quot;</span>, <span class="st">&quot;2→3&quot;</span>, <span class="st">&quot;3→4&quot;</span>, <span class="st">&quot;4→5&quot;</span>)</span>
-<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>    ))</span>
-<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a><span class="co"># Visualize distribution of differences</span></span>
-<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a><span class="fu">ggplot</span>(main_diffs_long, <span class="fu">aes</span>(<span class="at">x =</span> difference)) <span class="sc">+</span></span>
-<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>pair, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Distribution of Differences Between Consecutive Main Numbers&quot;</span>,</span>
-<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;How far apart are consecutive numbers in Eurojackpot draws?&quot;</span>,</span>
-<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Difference Between Numbers&quot;</span>,</span>
-<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Frequency&quot;</span></span>
-<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>year)</span></code></pre></div>
-<p><img src="number-patterns_files/figure-html/unnamed-chunk-1-1.png" width="960" /></p>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">pair =</span> <span class="fu">factor</span>(pair,</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;diff_1_2&quot;</span>, <span class="st">&quot;diff_2_3&quot;</span>, <span class="st">&quot;diff_3_4&quot;</span>, <span class="st">&quot;diff_4_5&quot;</span>),</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;gap 1 → 2&quot;</span>, <span class="st">&quot;gap 2 → 3&quot;</span>, <span class="st">&quot;gap 3 → 4&quot;</span>, <span class="st">&quot;gap 4 → 5&quot;</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    ))</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="fu">ggplot</span>(main_diffs_long, <span class="fu">aes</span>(<span class="at">x =</span> difference)) <span class="sc">+</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> ej_blue, <span class="at">color =</span> ej_surface, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>pair, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;How Far Apart Are Neighbouring Numbers in a Draw?&quot;</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;All draws since 2012, split by which gap of the sorted ticket is measured&quot;</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Gap between the two numbers&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="number-patterns_files/figure-html/consecutive-diffs-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="pull-stat">
+<span class="big">33.1% of draws</span><span class="why">contain at
+least two directly consecutive numbers (like 27 and 28). Theory predicts
+35.3% — so stop being surprised when it happens.</span>
 </div>
-<div id="euro-number-differences" class="section level2">
-<h2>Euro Number Differences</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Visualize difference between euro numbers</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">ggplot</span>(euro_diffs, <span class="fu">aes</span>(<span class="at">x =</span> diff_euro)) <span class="sc">+</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> <span class="st">&quot;orange&quot;</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Distribution of Differences Between Euro Numbers&quot;</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;How far apart are the two euro numbers in Eurojackpot draws?&quot;</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Difference Between Euro Numbers&quot;</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Frequency&quot;</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>year)</span></code></pre></div>
-<p><img src="number-patterns_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
 </div>
-<div id="yearly-trends-in-number-differences" class="section level2">
-<h2>Yearly Trends in Number Differences</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Calculate average differences by year</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>yearly_avg_diffs <span class="ot">&lt;-</span> main_diffs_long <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="fu">group_by</span>(year, pair) <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>        <span class="at">avg_diff =</span> <span class="fu">mean</span>(difference, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>        <span class="at">median_diff =</span> <span class="fu">median</span>(difference, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>        <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    )</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># Visualize yearly trends</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="fu">ggplot</span>(yearly_avg_diffs, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> avg_diff, <span class="at">color =</span> pair, <span class="at">group =</span> pair)) <span class="sc">+</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Average Difference Between Consecutive Main Numbers by Year&quot;</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Average Difference&quot;</span>,</span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">&quot;Number Pair&quot;</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>    <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">&quot;Set1&quot;</span>)</span></code></pre></div>
-<p><img src="number-patterns_files/figure-html/unnamed-chunk-3-1.png" width="960" /></p>
+<div id="euro-number-gaps" class="section level2">
+<h2>Euro Number Gaps</h2>
+<p>The same idea for the two euro numbers, with the theoretical
+distribution overlaid — for a pool of size <span
+class="math inline">\(p\)</span>, a gap of <span
+class="math inline">\(d\)</span> can be formed <span
+class="math inline">\(p-d\)</span> ways, and the pool size changed
+twice:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>results<span class="sc">$</span>pool_size <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(results<span class="sc">$</span>draw_date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2014-10-10&quot;</span>), <span class="dv">8</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">ifelse</span>(results<span class="sc">$</span>draw_date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2022-03-29&quot;</span>), <span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>euro_gap <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">gap =</span> results<span class="sc">$</span>euro_2 <span class="sc">-</span> results<span class="sc">$</span>euro_1)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>expected_gap <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>, <span class="cf">function</span>(d) {</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="fu">ifelse</span>(results<span class="sc">$</span>pool_size <span class="sc">&gt;</span> d,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>        (results<span class="sc">$</span>pool_size <span class="sc">-</span> d) <span class="sc">/</span> <span class="fu">choose</span>(results<span class="sc">$</span>pool_size, <span class="dv">2</span>), <span class="dv">0</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    ))</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>})</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">ggplot</span>(euro_gap, <span class="fu">aes</span>(<span class="at">x =</span> gap)) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">fill =</span> <span class="st">&quot;Observed&quot;</span>), <span class="at">binwidth =</span> <span class="dv">1</span>, <span class="at">color =</span> ej_surface, <span class="at">linewidth =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="fu">geom_point</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>        <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">gap =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>, <span class="at">expected =</span> expected_gap),</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">y =</span> expected, <span class="at">color =</span> <span class="st">&quot;Expected (pool-size adjusted)&quot;</span>), <span class="at">size =</span> <span class="dv">3</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> ej_gold)) <span class="sc">+</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Expected (pool-size adjusted)&quot;</span> <span class="ot">=</span> ej_ink2)) <span class="sc">+</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Gap Between the Two Euro Numbers&quot;</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Small gaps are simply more numerous - the machine agrees with the counting argument&quot;</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Gap between euro numbers&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="number-patterns_files/figure-html/euro-diffs-1.png" width="100%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="heatmap-of-pairwise-differences" class="section level2">
-<h2>Heatmap of Pairwise Differences</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Create a heatmap of pairwise differences</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> main_diffs_long <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="fu">group_by</span>(pair) <span class="sc">%&gt;%</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="fu">count</span>(difference) <span class="sc">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<div id="yearly-trends-in-number-gaps" class="section level2">
+<h2>Yearly Trends in Number Gaps</h2>
+<p>If the machine’s geometry drifted, the average gaps would trend. They
+don’t — they braid around their expectations:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>yearly_avg_diffs <span class="ot">&lt;-</span> main_diffs_long <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    <span class="fu">group_by</span>(year, pair) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>        <span class="at">avg_diff =</span> <span class="fu">mean</span>(difference, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>        <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    )</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">ggplot</span>(yearly_avg_diffs, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> avg_diff, <span class="at">color =</span> pair, <span class="at">group =</span> pair)) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.1</span>) <span class="sc">+</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">ej_ramp</span>(<span class="dv">4</span>)) <span class="sc">+</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Average Gap Between Neighbouring Numbers, by Year&quot;</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Four ordered gaps, fourteen years, zero direction&quot;</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Average gap&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
+<p><img src="number-patterns_files/figure-html/yearly-trends-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-gap-fingerprint" class="section level2">
+<h2>The Gap Fingerprint</h2>
+<p>All four gaps share one fingerprint: short distances dominate and
+long ones thin out geometrically. The heatmap shows each gap position’s
+distribution as a column of probabilities:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> main_diffs_long <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="fu">group_by</span>(pair) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="fu">count</span>(difference) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_data, <span class="fu">aes</span>(<span class="at">x =</span> pair, <span class="at">y =</span> difference, <span class="at">fill =</span> percentage)) <span class="sc">+</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(<span class="at">name =</span> <span class="st">&quot;Percentage (%)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Heatmap of Pairwise Differences Between Main Numbers&quot;</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Number Pair&quot;</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Difference Value&quot;</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>))</span></code></pre></div>
-<p><img src="number-patterns_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
-</div>
-<div id="heatmap-of-pairwise-differences-per-year"
-class="section level2">
-<h2>Heatmap of Pairwise Differences per year</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Create a heatmap of pairwise differences</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>heatmap_data <span class="ot">&lt;-</span> main_diffs_long <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="fu">group_by</span>(pair, year) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="fu">count</span>(difference) <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color =</span> ej_surface, <span class="at">linewidth =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="fu">scale_fill_gradient</span>(</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>        <span class="at">low =</span> ej_blue_pale, <span class="at">high =</span> ej_blue_deep,</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>        <span class="at">name =</span> <span class="st">&quot;Share of draws (%)&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">45</span>, <span class="at">by =</span> <span class="dv">5</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Distribution of Each Gap of the Sorted Ticket&quot;</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Darker = more common. Every gap loves small values; the tail thins out fast&quot;</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Gap size&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(), <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="dv">28</span>, <span class="st">&quot;pt&quot;</span>))</span></code></pre></div>
+<p><img src="number-patterns_files/figure-html/heatmap-alltime-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>heatmap_yearly <span class="ot">&lt;-</span> main_diffs_long <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="fu">group_by</span>(pair, year) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="fu">count</span>(difference) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_data, <span class="fu">aes</span>(<span class="at">x =</span> pair, <span class="at">y =</span> difference, <span class="at">fill =</span> percentage)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="fu">ggplot</span>(heatmap_yearly, <span class="fu">aes</span>(<span class="at">x =</span> pair, <span class="at">y =</span> difference, <span class="at">fill =</span> percentage)) <span class="sc">+</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(<span class="at">name =</span> <span class="st">&quot;Percentage (%)&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Heatmap of Pairwise Differences Between Main Numbers&quot;</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Number Pair&quot;</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Difference Value&quot;</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>)) <span class="sc">+</span></span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>year)</span></code></pre></div>
-<p><img src="number-patterns_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="fu">scale_fill_gradient</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>        <span class="at">low =</span> ej_blue_pale, <span class="at">high =</span> ej_blue_deep,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>        <span class="at">name =</span> <span class="st">&quot;Share of draws (%)&quot;</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>year) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;The Same Fingerprint, Every Single Year&quot;</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Fourteen re-runs of the experiment produce fourteen near-identical patterns&quot;</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Gap size&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>        <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="dv">28</span>, <span class="st">&quot;pt&quot;</span>),</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="fl">0.4</span>, <span class="at">size =</span> <span class="fu">rel</span>(<span class="fl">0.7</span>))</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="number-patterns_files/figure-html/heatmap-yearly-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="info-box">
+<p><strong>Reading patterns responsibly:</strong> everything above — the
+gap shapes, the consecutive-number rate, the yearly fingerprints —
+matches the combinatorics of drawing 5 balls from 50 without
+replacement. The patterns are real, but they belong to
+<em>mathematics</em>, not to the machine’s habits. A ticket shaped like
+a “typical” draw wins exactly as often as any other ticket.</p>
+</div>
 <div class="navigation-buttons">
 <p><a href="time-series.html" class="prev-button"><i class="fa fa-arrow-left"></i>
 Previous: Time Series</a>
@@ -641,14 +681,100 @@ the Next Pot? <i class="fa fa-arrow-right"></i></a></p>
 </div>
 
 <footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <p class="text-muted">© 2025 Eurojackpot Analysis | Created with <a href="https://rmarkdown.rstudio.com">R Markdown</a></p>
-      </div>
-    </div>
-  </div>
-</footer> 
+  <div class="footer-brand">Eurojackpot Analysis</div>
+  <p class="footer-note">
+    Every chart on this site is generated from the raw draw history with reproducible R code —
+    click any “Code” button to see exactly how. Lottery draws are independent random events:
+    nothing here can predict winning numbers, and it never spends better than it entertains.
+  </p>
+  <p>© 2025 Eurojackpot Analysis · Built with <a href="https://rmarkdown.rstudio.com">R Markdown</a> ·
+    <a href="https://github.com/eonurk/eurojackpot">Source on GitHub</a></p>
+</footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* reading progress bar */
+  var bar = document.createElement("div");
+  bar.id = "ej-progress";
+  document.body.appendChild(bar);
+  var ticking = false;
+  function paint() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    ticking = false;
+  }
+  document.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(paint); }
+  }, { passive: true });
+  paint();
+
+  /* highlight the current page in the navbar */
+  var here = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".navbar a[href]").forEach(function (a) {
+    if (a.getAttribute("href") === here) {
+      var li = a.closest("li");
+      if (li) li.classList.add("active");
+    }
+  });
+
+  /* wrap tables so they scroll sideways on small screens */
+  document.querySelectorAll(".main-container table").forEach(function (t) {
+    if (t.closest(".table-scroll") || t.closest(".pagedtable")) return;
+    var w = document.createElement("div");
+    w.className = "table-scroll";
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  if (reduced || !("IntersectionObserver" in window)) return;
+
+  /* scroll-reveal */
+  var sel = [
+    ".main-container .section > h2", ".main-container .section > h3",
+    ".main-container .section > p", ".main-container > p",
+    ".main-container .table-scroll", ".main-container .info-box",
+    ".main-container .pull-stat", ".main-container pre",
+    ".stat-card", ".page-card", ".navigation-buttons"
+  ].join(", ");
+  var els = [].slice.call(document.querySelectorAll(sel));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -7% 0px", threshold: 0.04 });
+  els.forEach(function (el, i) {
+    el.classList.add("rv");
+    el.style.transitionDelay = (i % 4) * 60 + "ms";
+    io.observe(el);
+  });
+
+  /* animated counters: <span class="count-up" data-target="828">828</span> */
+  var counters = [].slice.call(document.querySelectorAll(".count-up"));
+  if (counters.length) {
+    var io2 = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io2.unobserve(e.target);
+        var el = e.target;
+        var target = parseFloat(el.getAttribute("data-target") || "0");
+        var t0 = null, dur = 1600;
+        function tick(ts) {
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toLocaleString("en-US");
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { el.textContent = "0"; io2.observe(el); });
+  }
+})();
+</script>
 
 
 </div>

@@ -3,17 +3,19 @@ title: "Frequency Analysis"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(
+    echo = TRUE, warning = FALSE, message = FALSE,
+    dpi = 144, out.width = "100%", fig.align = "center"
+)
 # Load necessary libraries
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-library(patchwork)
+source("theme_ej.R")
 
 # Read the data (assuming this was already done in data-overview.Rmd)
 # If you're using this page independently, uncomment and run the data loading code
 results <- read.csv("eurojackpot_results.csv", stringsAsFactors = FALSE)
-
 
 # Convert date format to day, month, year
 results$draw_date <- as.Date(results$draw_date)
@@ -37,255 +39,206 @@ results <- cbind(results, euro_numbers_matrix)
 for (col in c(paste0("main_", 1:5), paste0("euro_", 1:2))) {
     results[[col]] <- as.numeric(results[[col]])
 }
+
+# Euro pool size per draw (the game changed twice - see Chapter 5)
+results$pool_size <- ifelse(results$draw_date < as.Date("2014-10-10"), 8,
+    ifelse(results$draw_date < as.Date("2022-03-29"), 10, 12)
+)
+
+mains <- as.matrix(results[, paste0("main_", 1:5)])
+n <- nrow(results)
 ```
 
-## Number Frequency Analysis
+Every lottery fan has a lucky number, and every lucky number has a track record. This chapter counts how often each ball actually came out of the machine, year by year — then asks the only question that matters: is any of the unevenness bigger than pure chance would produce? We standardise every count into a z-score (how many standard deviations a number sits from its fair-machine expectation) and light up the cells that cross the conventional ±1.96 "significance" line.
 
-```{r}
-# Create a function to calculate frequencies
-calculate_frequencies <- function(data, number_type, max_number) {
-    # Reshape data to long format
-    if (number_type == "main") {
-        long_data <- data %>%
-            select(year, main_1, main_2, main_3, main_4, main_5) %>%
-            pivot_longer(
-                cols = starts_with("main_"),
-                names_to = "position",
-                values_to = "number"
-            )
-    } else {
-        long_data <- data %>%
-            select(year, euro_1, euro_2) %>%
-            pivot_longer(
-                cols = starts_with("euro_"),
-                names_to = "position",
-                values_to = "number"
-            )
-    }
+## Year-by-Year Deviations From a Fair Machine
 
-    # Calculate frequencies by year and number
-    freq_data <- long_data %>%
-        group_by(year, number) %>%
-        summarise(frequency = n(), .groups = "drop") %>%
-        # Add missing numbers with zero frequency
-        complete(year, number = 1:max_number, fill = list(frequency = 0))
+Instead of fourteen stacked bar charts, one picture: each cell is a number's deviation from expectation in one year. Blue means "came up less than expected", red means "more", and outlined cells cross the 95% significance line.
 
-    return(freq_data)
-}
-
-# Calculate frequencies
-main_freq <- calculate_frequencies(results, "main", 50)
-euro_freq <- calculate_frequencies(results, "euro", 12)
-
-# Add outlier detection based on uniform distribution
-# For main numbers (1-50)
-main_outlier_analysis <- main_freq %>%
+```{r main-z, fig.height=6.5}
+main_z <- results %>%
+    select(year, all_of(paste0("main_", 1:5))) %>%
+    pivot_longer(-year, values_to = "number") %>%
+    count(year, number, name = "frequency") %>%
+    complete(year, number = 1:50, fill = list(frequency = 0)) %>%
     group_by(year) %>%
     mutate(
-        # Expected frequency under uniform distribution
-        expected = sum(frequency) / 50,
-        # Calculate deviation from expected
-        deviation = frequency - expected,
-        # Calculate z-score (standardized deviation)
-        z_score = (frequency - expected) / sqrt(expected * (1 - 1 / 50)),
-        # Flag significant outliers (|z| > 1.96 for 95% confidence)
+        draws = sum(frequency) / 5,
+        expected = draws * 5 / 50,
+        z_score = (frequency - expected) / sqrt(draws * 0.1 * 0.9),
         is_outlier = abs(z_score) > 1.96
     ) %>%
     ungroup()
 
-# For euro numbers (1-12)
-euro_outlier_analysis <- euro_freq %>%
-    group_by(year) %>%
-    mutate(
-        # Expected frequency under uniform distribution
-        expected = sum(frequency) / 12,
-        # Calculate deviation from expected
-        deviation = frequency - expected,
-        # Calculate z-score (standardized deviation)
-        z_score = (frequency - expected) / sqrt(expected * (1 - 1 / 12)),
-        # Flag significant outliers (|z| > 1.96 for 95% confidence)
-        is_outlier = abs(z_score) > 1.96
-    ) %>%
-    ungroup()
+n_out_main <- sum(main_z$is_outlier)
 
-# Visualize outliers for main numbers
-main_outlier_plot <- ggplot(
-    main_outlier_analysis,
-    aes(x = number, y = frequency, fill = is_outlier)
-) +
-    geom_bar(stat = "identity") +
-    scale_fill_manual(values = c("FALSE" = "steelblue", "TRUE" = "red")) +
-    facet_wrap(~year, ncol = 1) +
-    scale_x_continuous(breaks = seq(1, 50, by = 5)) +
-    geom_hline(aes(yintercept = expected), linetype = "dashed", color = "black") +
-    labs(
-        title = "Main Number Frequency with Outliers Highlighted",
-        subtitle = "Red bars indicate statistically significant deviations from uniform distribution",
-        x = "Main Number (1-50)",
-        y = "Frequency"
+ggplot(main_z, aes(x = number, y = year, fill = z_score)) +
+    geom_tile(color = ej_surface, linewidth = 0.4) +
+    geom_tile(
+        data = filter(main_z, is_outlier),
+        color = ej_ink, linewidth = 0.55
     ) +
-    theme_minimal()
+    scale_fill_gradient2(
+        low = ej_blue_dark, mid = "#f0efec", high = ej_red,
+        name = "z-score"
+    ) +
+    scale_x_continuous(breaks = c(1, seq(5, 50, by = 5)), expand = c(0, 0)) +
+    labs(
+        title = "Main Numbers: Deviation From Expectation, Year by Year",
+        subtitle = sprintf(
+            "Outlined cells pass |z| > 1.96. Found: %d of %d cells (%.0f expected as false positives at the 95%% line)",
+            n_out_main, nrow(main_z), 0.05 * nrow(main_z)
+        ),
+        x = "Main number (1-50)", y = NULL, caption = ej_caption
+    ) +
+    theme(panel.grid.major = element_blank(), legend.key.width = unit(28, "pt"))
+```
 
-# Visualize outliers for euro numbers
-euro_outlier_plot <- ggplot(
-    euro_outlier_analysis,
-    aes(x = number, y = frequency, fill = is_outlier)
-) +
-    geom_bar(stat = "identity") +
-    scale_fill_manual(values = c("FALSE" = "steelblue", "TRUE" = "red")) +
-    facet_wrap(~year, ncol = 1) +
+```{r euro-z, fig.height=5.5}
+# For euro numbers the expectation must respect the pool changes:
+# 9-10 exist only since Oct 2014, 11-12 since Mar 2022. Cells where a number
+# was never in the pool are blanked instead of being scored as "cold".
+euro_cells <- expand.grid(
+    year = sort(unique(results$year)), number = 1:12,
+    stringsAsFactors = FALSE
+)
+euro_stats <- mapply(function(y, x) {
+    sel <- results$year == y & results$pool_size >= x
+    p <- 2 / results$pool_size[sel]
+    c(expected = sum(p), variance = sum(p * (1 - p)), exposure = sum(sel))
+}, euro_cells$year, euro_cells$number)
+euro_cells <- cbind(euro_cells, t(euro_stats))
+
+euro_obs_year <- results %>%
+    select(year, euro_1, euro_2) %>%
+    pivot_longer(-year, values_to = "number") %>%
+    count(year, number, name = "frequency")
+
+euro_z <- euro_cells %>%
+    left_join(euro_obs_year, by = c("year", "number")) %>%
+    mutate(
+        frequency = coalesce(frequency, 0L),
+        z_score = ifelse(exposure > 0, (frequency - expected) / sqrt(variance), NA),
+        is_outlier = !is.na(z_score) & abs(z_score) > 1.96
+    )
+
+n_out_euro <- sum(euro_z$is_outlier)
+n_cells_euro <- sum(euro_z$exposure > 0)
+
+ggplot(euro_z, aes(x = number, y = year, fill = z_score)) +
+    geom_tile(color = ej_surface, linewidth = 0.4) +
+    geom_tile(
+        data = filter(euro_z, is_outlier),
+        color = ej_ink, linewidth = 0.55
+    ) +
+    scale_fill_gradient2(
+        low = ej_blue_dark, mid = "#f0efec", high = ej_red,
+        name = "z-score", na.value = "#e8e7e2"
+    ) +
+    scale_x_continuous(breaks = 1:12, expand = c(0, 0)) +
+    labs(
+        title = "Euro Numbers: Deviation From Expectation, Year by Year",
+        subtitle = sprintf(
+            "Gray cells = number not yet in the pool. Outliers: %d of %d live cells (%.0f expected by chance)",
+            n_out_euro, n_cells_euro, 0.05 * n_cells_euro
+        ),
+        x = "Euro number (1-12)", y = NULL, caption = ej_caption
+    ) +
+    theme(panel.grid.major = element_blank(), legend.key.width = unit(28, "pt"))
+```
+
+```{r outlier-table}
+main_outliers_summary <- main_z %>%
+    filter(is_outlier) %>%
+    arrange(desc(abs(z_score))) %>%
+    head(10) %>%
+    transmute(
+        Year = year, `Main number` = number, Appearances = frequency,
+        Expected = round(expected, 1), `z-score` = round(z_score, 2)
+    )
+
+knitr::kable(main_outliers_summary,
+    caption = "The ten loudest single-year deviations - every one of them ordinary sampling noise",
+    align = c("c", "c", "r", "r", "r")
+)
+```
+
+<div class="pull-stat"><span class="big">`r n_out_main + n_out_euro` outliers, ~`r round(0.05 * (nrow(main_z) + n_cells_euro))` expected</span><span class="why">At a 95% significance line, one cell in twenty crosses it by luck alone. The machine is behaving exactly like a fair machine bragging about being fair.</span></div>
+
+## Most and Least Frequent Numbers (Current Rules)
+
+The game's format changed in March 2022, so for a "who's hot right now" table the honest window is the current-rules era only. Here is every number's record since then:
+
+```{r current-freq, fig.height=5}
+current <- results %>% filter(draw_date >= as.Date("2022-03-29"))
+n_cur <- nrow(current)
+
+main_cur <- tabulate(as.integer(as.matrix(current[, paste0("main_", 1:5)])), nbins = 50)
+expected_cur <- 5 * n_cur / 50
+
+ggplot(data.frame(number = 1:50, frequency = main_cur), aes(number, frequency)) +
+    geom_col(fill = ej_blue, width = 0.75) +
+    geom_hline(yintercept = expected_cur, linetype = "dashed", color = ej_ink, linewidth = 0.6) +
+    annotate("text",
+        x = 50.6, y = expected_cur, label = sprintf("expected: %.0f", expected_cur),
+        hjust = 1, vjust = -0.7, size = 3.4, color = ej_ink2, fontface = "bold"
+    ) +
+    scale_x_continuous(breaks = c(1, seq(5, 50, by = 5))) +
+    labs(
+        title = "Main Number Frequency Under the Current Rules",
+        subtitle = sprintf("%d draws since the March 2022 relaunch - dashed line is the fair-machine expectation", n_cur),
+        x = "Main number (1-50)", y = "Appearances", caption = ej_caption
+    )
+```
+
+```{r current-euro, fig.height=4.5}
+euro_cur <- tabulate(c(current$euro_1, current$euro_2), nbins = 12)
+expected_euro_cur <- 2 * n_cur / 12
+
+ggplot(data.frame(number = 1:12, frequency = euro_cur), aes(number, frequency)) +
+    geom_col(fill = ej_gold, width = 0.6) +
+    geom_hline(yintercept = expected_euro_cur, linetype = "dashed", color = ej_ink, linewidth = 0.6) +
+    annotate("text",
+        x = 12.4, y = expected_euro_cur, label = sprintf("expected: %.0f", expected_euro_cur),
+        hjust = 1, vjust = -0.7, size = 3.4, color = ej_ink2, fontface = "bold"
+    ) +
     scale_x_continuous(breaks = 1:12) +
-    geom_hline(aes(yintercept = expected), linetype = "dashed", color = "black") +
     labs(
-        title = "Euro Number Frequency with Outliers Highlighted",
-        subtitle = "Red bars indicate statistically significant deviations from uniform distribution",
-        x = "Euro Number (1-12)",
-        y = "Frequency"
-    ) +
-    theme_minimal()
-
-# Display outlier plots
-main_outlier_plot
-euro_outlier_plot
-
-# Summarize outliers in a table
-main_outliers_summary <- main_outlier_analysis %>%
-    filter(is_outlier) %>%
-    arrange(year, desc(abs(z_score))) %>%
-    select(year, number, frequency, expected, deviation, z_score)
-
-euro_outliers_summary <- euro_outlier_analysis %>%
-    filter(is_outlier) %>%
-    arrange(year, desc(abs(z_score))) %>%
-    select(year, number, frequency, expected, deviation, z_score)
-
-# Display outlier summaries
-
-if (nrow(main_outliers_summary) > 0) {
-    knitr::kable(main_outliers_summary, digits = 2)
-} else {
-    cat("No statistically significant outliers found in main numbers.\n")
-}
-
-if (nrow(euro_outliers_summary) > 0) {
-    knitr::kable(euro_outliers_summary, digits = 2)
-} else {
-    cat("No statistically significant outliers found in euro numbers.\n")
-}
+        title = "Euro Number Frequency Under the Current Rules",
+        subtitle = "All twelve numbers have been in the pool for this whole window - finally a fair comparison",
+        x = "Euro number (1-12)", y = "Appearances", caption = ej_caption
+    )
 ```
 
-## Most and Least Frequent Numbers
+```{r current-tables}
+top5 <- order(-main_cur)[1:5]
+bottom5 <- order(main_cur)[1:5]
+knitr::kable(
+    data.frame(
+        Rank = 1:5,
+        `Hottest main` = top5, Appearances = main_cur[top5],
+        `Coldest main` = bottom5, `Appearances ` = main_cur[bottom5],
+        check.names = FALSE
+    ),
+    caption = sprintf("Main-number extremes since March 2022 (expected: %.0f each)", expected_cur),
+    align = rep("c", 5)
+)
 
-```{r}
-# Analyze the most and least frequently drawn numbers
+knitr::kable(
+    data.frame(
+        `Euro number` = order(-euro_cur),
+        Appearances = euro_cur[order(-euro_cur)],
+        `vs expected` = sprintf("%+d", euro_cur[order(-euro_cur)] - round(expected_euro_cur)),
+        check.names = FALSE
+    ),
+    caption = sprintf("All twelve euro numbers since March 2022 (expected: %.0f each)", expected_euro_cur),
+    align = c("c", "r", "r")
+)
+```
 
-# Function to create frequency analysis
-analyze_number_frequency <- function(data, number_type, max_number) {
-    # Create long format data
-    if (number_type == "main") {
-        long_data <- data %>%
-            select(main_1, main_2, main_3, main_4, main_5) %>%
-            pivot_longer(
-                cols = everything(),
-                names_to = "position",
-                values_to = "number"
-            )
-    } else {
-        long_data <- data %>%
-            select(euro_1, euro_2) %>%
-            pivot_longer(
-                cols = everything(),
-                names_to = "position",
-                values_to = "number"
-            )
-    }
-
-    # Count frequency of each number
-    number_freq <- long_data %>%
-        count(number) %>%
-        rename(frequency = n)
-
-    # Add any missing numbers with zero frequency
-    all_numbers <- tibble(number = 1:max_number)
-    number_freq <- all_numbers %>%
-        left_join(number_freq, by = "number") %>%
-        mutate(frequency = ifelse(is.na(frequency), 0, frequency))
-
-    # Calculate statistics
-    number_freq <- number_freq %>%
-        mutate(
-            percentage = frequency / sum(frequency) * 100,
-            expected = sum(frequency) / max_number,
-            deviation = frequency - expected,
-            relative_deviation = deviation / expected * 100
-        )
-
-    return(number_freq)
-}
-
-# Analyze main numbers (1-50)
-main_number_freq <- analyze_number_frequency(results %>% filter(year >= 2022), "main", 50)
-
-# Analyze euro numbers (1-12)
-euro_number_freq <- analyze_number_frequency(results %>% filter(year >= 2022), "euro", 12)
-
-# Create plots for frequency analysis
-main_freq_plot <- ggplot(main_number_freq, aes(x = number, y = frequency)) +
-    geom_bar(stat = "identity", fill = "steelblue") +
-    geom_hline(aes(yintercept = expected), linetype = "dashed", color = "red") +
-    labs(
-        title = "Main Number Frequency Distribution",
-        subtitle = "Red dashed line indicates expected frequency under uniform distribution",
-        x = "Main Number (1-50)",
-        y = "Frequency"
-    ) +
-    theme_minimal()
-
-euro_freq_plot <- ggplot(euro_number_freq, aes(x = number, y = frequency)) +
-    geom_bar(stat = "identity", fill = "steelblue") +
-    geom_hline(aes(yintercept = expected), linetype = "dashed", color = "red") +
-    labs(
-        title = "Euro Number Frequency Distribution",
-        subtitle = "Red dashed line indicates expected frequency under uniform distribution",
-        x = "Euro Number (1-12)",
-        y = "Frequency"
-    ) +
-    theme_minimal() +
-    scale_x_continuous(breaks = 1:12)
-
-# Display the plots
-main_freq_plot
-euro_freq_plot
-
-# Find top and bottom 5 numbers
-top_main_numbers <- main_number_freq %>%
-    arrange(desc(frequency)) %>%
-    head(5)
-
-bottom_main_numbers <- main_number_freq %>%
-    arrange(frequency) %>%
-    head(5)
-
-top_euro_numbers <- euro_number_freq %>%
-    arrange(desc(frequency)) %>%
-    head(5)
-
-bottom_euro_numbers <- euro_number_freq %>%
-    arrange(frequency) %>%
-    head(5)
-
-# Display summary tables
-
-knitr::kable(top_main_numbers, digits = 2)
-
-
-knitr::kable(bottom_main_numbers, digits = 2)
-
-
-knitr::kable(top_euro_numbers, digits = 2)
-
-knitr::kable(bottom_euro_numbers, digits = 2)
-``` 
+<div class="info-box">
+<strong>What to take away:</strong> the gap between the hottest and coldest number is precisely chance-sized — the formal chi-squared test in <a href="predictive-analysis.html">Chapter 5</a> gives p&nbsp;=&nbsp;0.98, and the outlined heatmap cells above appear at almost exactly the false-positive rate the 95% line predicts. Frequency tables are fun history. They are not a forecast.
+</div>
 
 <div class="navigation-buttons">
   <a href="data-overview.html" class="prev-button"><i class="fa fa-arrow-left"></i> Previous: Data Overview</a>

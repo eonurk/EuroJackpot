@@ -11,7 +11,8 @@
 
 
 
-<title>Eurojackpot Statistical Analysis</title>
+<title>Eurojackpot Analysis — The Numbers Behind Europe’s €120M
+Obsession</title>
 
 <script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
@@ -29,17 +30,17 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#101010">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -221,75 +222,6 @@ $(document).ready(function () {
 
 
 
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-.tocify-subheader {
-  display: inline;
-}
-.tocify-subheader .tocify-item {
-  font-size: 0.95em;
-}
-
-</style>
-
-
 
 </head>
 
@@ -297,16 +229,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -390,86 +312,235 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Eurojackpot Statistical Analysis</h1>
 
 </div>
 
 
-<div id="what-is-eurojackpot" class="section level2">
-<h2>🎮 What is Eurojackpot?</h2>
-<p>Eurojackpot is one of Europe’s most popular transnational lottery
-games, launched in 2012 and now played across 18 European countries. The
-game features a simple yet challenging format: players must match
-<strong>5 numbers from a pool of 50</strong> plus <strong>2 Euro numbers
-from a pool of 12</strong> to win the jackpot. Draws take place every
-Tuesday and Friday in Helsinki, with jackpots starting at €10 million
-and capable of rolling over to a maximum of €120 million.</p>
+<div class="ej-hero">
+<p class="ej-kicker">
+Fourteen years · 828 draws · one honest question
+</p>
+<h1 class="ej-headline">
+The numbers behind Europe’s <span class="ej-accent">€120 million</span>
+obsession
+</h1>
+<p class="ej-deck">
+Eurojackpot has been drawing balls in Helsinki twice a week since 2012.
+This site puts every single draw under a statistical microscope — the
+patterns, the myths, and the one thing you can actually predict.
+</p>
+<div class="ej-balls" aria-label="Most recent draw in the dataset">
+<p><span class="ball">28</span> <span class="ball">31</span> <span
+class="ball">38</span> <span class="ball">42</span> <span
+class="ball">48</span> <span class="ball plus">+</span> <span
+class="ball euro">3</span> <span class="ball euro">10</span></p>
 </div>
-<div id="about-this-analysis" class="section level2">
-<h2>📊 About This Analysis</h2>
-<p>This project examines historical Eurojackpot draw data through
-statistical analysis. We’ll explore:</p>
-<ul>
-<li><strong>Historical Draw Data</strong> - Comprehensive examination of
-all Eurojackpot draws since inception</li>
-<li><strong>Number Frequencies</strong> - Which numbers have appeared
-most and least frequently over time</li>
-<li><strong>Distribution Patterns</strong> - How the drawn numbers
-distribute across the possible range</li>
-<li><strong>Statistical Observations</strong> - Interesting statistical
-properties of the historical results</li>
-</ul>
+<p class="ej-balls-caption">
+The most recent draw in this dataset — February 25, 2025
+</p>
+<div class="stat-grid">
+<div class="stat-card">
+<div class="stat-value">
+<span class="count-up" data-target="828">828</span>
 </div>
-<div id="analytical-approach" class="section level2">
-<h2>🔍 Analytical Approach</h2>
-<p>Our analysis employs descriptive statistics and data visualization
-techniques to examine the Eurojackpot draw history. We present factual
-observations about past draws while acknowledging the fundamental
-principle that each draw is an independent random event.</p>
-<p>All visualizations and calculations are implemented using R and its
-data visualization packages, providing both statistical detail and
-visual clarity.</p>
+<div class="stat-label">
+Draws analysed
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-value">
+<span class="count-up" data-target="5796">5,796</span>
+</div>
+<div class="stat-label">
+Balls drawn
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-value">
+<span class="count-up" data-target="14">14</span>
+</div>
+<div class="stat-label">
+Years covered
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-value">
+1<span class="stat-unit"> in </span><span class="count-up"
+data-target="1.3983816\times 10^{8}">139,838,160</span>
+</div>
+<div class="stat-label">
+Jackpot odds
+</div>
+</div>
+</div>
+</div>
+<div id="the-game-in-one-paragraph" class="section level2">
+<h2>The game, in one paragraph</h2>
+<p>Pick <strong>5 numbers from 50</strong>, add <strong>2 Euro numbers
+from 12</strong>, and match all seven to win a jackpot that starts at
+€10 million and climbs to a €120 million cap. Draws happen every Tuesday
+and Friday in Helsinki, across 18 countries. Since launch the game has
+quietly changed its own rules twice — a detail that, as you’ll see,
+quietly breaks most casual analyses of it.</p>
+<div class="pull-stat">
+<span class="big">1 in 139,838,160</span><span class="why">Your odds of
+hitting the jackpot with a single line. You are roughly 100× more likely
+to be struck by lightning this year.</span>
+</div>
+</div>
+<div id="inside-the-data" class="section level2">
+<h2>Inside the data</h2>
+<p>Five chapters, each built from the raw draw history with reproducible
+R code — press any “Code” button on the way to see exactly how a figure
+was made.</p>
+<div class="page-cards">
+<p><a class="page-card" href="data-overview.html"><span
+class="pc-kicker">Chapter 1</span><span class="pc-title">Data
+Overview</span><span class="pc-desc">The shape of 828 draws: what the
+dataset holds, how often each number shows up, and which pairs travel
+together.</span><span class="pc-go">Read chapter →</span></a></p>
+<p><a class="page-card" href="frequency-analysis.html"><span
+class="pc-kicker">Chapter 2</span><span class="pc-title">Frequency
+Analysis</span><span class="pc-desc">“Hot” and “cold” numbers under a
+microscope — and how big the gap between luckiest and unluckiest ball
+should be by pure chance.</span><span class="pc-go">Read chapter
+→</span></a></p>
+<p><a class="page-card" href="time-series.html"><span
+class="pc-kicker">Chapter 3</span><span class="pc-title">Time
+Series</span><span class="pc-desc">Draw sums, spreads and seasons: does
+the machine drift over fourteen years, or is every wobble just noise
+wearing a trend costume?</span><span class="pc-go">Read chapter
+→</span></a></p>
+<p><a class="page-card" href="number-patterns.html"><span
+class="pc-kicker">Chapter 4</span><span class="pc-title">Number
+Patterns</span><span class="pc-desc">The gaps between the five balls in
+a draw — how tightly they cluster, how often neighbours appear, and what
+a “typical” ticket looks like.</span><span class="pc-go">Read chapter
+→</span></a></p>
+<p><a class="page-card" href="predictive-analysis.html"><span
+class="pc-kicker">Chapter 5</span><span class="pc-title">Predicting the
+Next Pot?</span><span class="pc-desc">Every popular prediction strategy,
+formally backtested against history — plus the one quantity in this game
+you genuinely <em>can</em> forecast.</span><span class="pc-go">Read
+chapter →</span></a></p>
+</div>
+</div>
+<div id="how-we-work" class="section level2">
+<h2>How we work</h2>
+<p>Descriptive statistics, formal hypothesis tests, and walk-forward
+backtests — visualised, and honest about uncertainty. Where a popular
+belief fails a test, we say so; where the data genuinely contains
+structure (it happens!), we show where it comes from.</p>
 <div class="info-box">
-<p><strong>Important Note:</strong> This analysis examines historical
-data only. Lottery draws are designed to be random events, and past
-results cannot predict future outcomes. This content is provided purely
-for informational and educational purposes.</p>
+<p><strong>Play-it-straight note:</strong> lottery draws are independent
+random events. Past results cannot predict future outcomes, and this
+site will show you precisely <em>why</em> — with tests, not slogans.
+Everything here is for education and curiosity. If you play, treat the
+ticket as entertainment, never as an investment.</p>
 </div>
-<div id="content-overview" class="section level3">
-<h3>Content Overview</h3>
-<ul>
-<li><strong>Data Exploration</strong>: Examination of the dataset
-structure and basic statistics</li>
-<li><strong>Number Analysis</strong>: Detailed look at the frequency
-distribution of drawn numbers</li>
-<li><strong>Temporal Observations</strong>: How draw patterns have
-appeared over different time periods</li>
-<li><strong>Statistical Insights</strong>: Notable statistical
-properties within the historical data</li>
-<li><strong>Predicting the Pot</strong>: Formal tests and backtests of
-popular prediction strategies, the rule changes hiding in the data, and
-what actually <em>is</em> forecastable</li>
-</ul>
 <div class="navigation-buttons">
-<p><a href="data-overview.html" class="next-button">Next: Data Overview
-<i class="fa fa-arrow-right"></i></a></p>
-</div>
+<p><a href="data-overview.html" class="next-button">Start reading: Data
+Overview <i class="fa fa-arrow-right"></i></a></p>
 </div>
 </div>
 
 <footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <p class="text-muted">© 2025 Eurojackpot Analysis | Created with <a href="https://rmarkdown.rstudio.com">R Markdown</a></p>
-      </div>
-    </div>
-  </div>
-</footer> 
+  <div class="footer-brand">Eurojackpot Analysis</div>
+  <p class="footer-note">
+    Every chart on this site is generated from the raw draw history with reproducible R code —
+    click any “Code” button to see exactly how. Lottery draws are independent random events:
+    nothing here can predict winning numbers, and it never spends better than it entertains.
+  </p>
+  <p>© 2025 Eurojackpot Analysis · Built with <a href="https://rmarkdown.rstudio.com">R Markdown</a> ·
+    <a href="https://github.com/eonurk/eurojackpot">Source on GitHub</a></p>
+</footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* reading progress bar */
+  var bar = document.createElement("div");
+  bar.id = "ej-progress";
+  document.body.appendChild(bar);
+  var ticking = false;
+  function paint() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    ticking = false;
+  }
+  document.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(paint); }
+  }, { passive: true });
+  paint();
+
+  /* highlight the current page in the navbar */
+  var here = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".navbar a[href]").forEach(function (a) {
+    if (a.getAttribute("href") === here) {
+      var li = a.closest("li");
+      if (li) li.classList.add("active");
+    }
+  });
+
+  /* wrap tables so they scroll sideways on small screens */
+  document.querySelectorAll(".main-container table").forEach(function (t) {
+    if (t.closest(".table-scroll") || t.closest(".pagedtable")) return;
+    var w = document.createElement("div");
+    w.className = "table-scroll";
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  if (reduced || !("IntersectionObserver" in window)) return;
+
+  /* scroll-reveal */
+  var sel = [
+    ".main-container .section > h2", ".main-container .section > h3",
+    ".main-container .section > p", ".main-container > p",
+    ".main-container .table-scroll", ".main-container .info-box",
+    ".main-container .pull-stat", ".main-container pre",
+    ".stat-card", ".page-card", ".navigation-buttons"
+  ].join(", ");
+  var els = [].slice.call(document.querySelectorAll(sel));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -7% 0px", threshold: 0.04 });
+  els.forEach(function (el, i) {
+    el.classList.add("rv");
+    el.style.transitionDelay = (i % 4) * 60 + "ms";
+    io.observe(el);
+  });
+
+  /* animated counters: <span class="count-up" data-target="828">828</span> */
+  var counters = [].slice.call(document.querySelectorAll(".count-up"));
+  if (counters.length) {
+    var io2 = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io2.unobserve(e.target);
+        var el = e.target;
+        var target = parseFloat(el.getAttribute("data-target") || "0");
+        var t0 = null, dur = 1600;
+        function tick(ts) {
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toLocaleString("en-US");
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { el.textContent = "0"; io2.observe(el); });
+  }
+})();
+</script>
 
 
-</div>
-</div>
 
 </div>
 
@@ -507,35 +578,6 @@ $(document).ready(function () {
 });
 </script>
 
-<script>
-$(document).ready(function ()  {
-
-    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
-    $('.unlisted.unnumbered').addClass('toc-ignore')
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = false;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

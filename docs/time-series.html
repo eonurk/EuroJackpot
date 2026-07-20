@@ -38,8 +38,11 @@
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#101010">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -505,127 +508,143 @@ div.tocify {
 </div>
 
 
-<div id="average-sum" class="section level2">
-<h2>Average Sum</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Calculate sum of main numbers for each draw</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>results<span class="sc">$</span>main_sum <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(results[, <span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)])</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># Calculate average of main numbers for each draw</span></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>results<span class="sc">$</span>main_avg <span class="ot">&lt;-</span> results<span class="sc">$</span>main_sum <span class="sc">/</span> <span class="dv">5</span></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co"># Plot the sum of main numbers over time</span></span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> draw_date, <span class="at">y =</span> main_sum)) <span class="sc">+</span></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span></span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<p>If the machine drifted — a worn ball here, a heavier pocket there —
+it would show up over time: sums creeping up, spreads narrowing, seasons
+mattering. So we put fourteen years of draws on a timeline and look for
+exactly that. What follows is a masterclass in how convincingly pure
+noise can impersonate a trend, until you draw the expectation line
+through it.</p>
+<div id="the-sum-of-each-draw" class="section level2">
+<h2>The Sum of Each Draw</h2>
+<p>Adding up the five main numbers compresses every draw into one
+number. Under fair play its long-run average should sit at (1 + 50)/2 ×
+5 = <strong>127.5</strong>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Calculate sum of main numbers for each draw</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>results<span class="sc">$</span>main_sum <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(results[, <span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)])</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>results<span class="sc">$</span>main_avg <span class="ot">&lt;-</span> results<span class="sc">$</span>main_sum <span class="sc">/</span> <span class="dv">5</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> draw_date, <span class="at">y =</span> main_sum)) <span class="sc">+</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;#86b6ef&quot;</span>, <span class="at">linewidth =</span> <span class="fl">0.35</span>, <span class="at">alpha =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">127.5</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> ej_ink, <span class="at">linewidth =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="at">color =</span> ej_blue_deep, <span class="at">linewidth =</span> <span class="fl">1.1</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">fill =</span> <span class="st">&quot;#cde2fb&quot;</span>) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">&quot;text&quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>        <span class="at">x =</span> <span class="fu">max</span>(results<span class="sc">$</span>draw_date), <span class="at">y =</span> <span class="fl">127.5</span>, <span class="at">label =</span> <span class="st">&quot;fair-machine mean: 127.5&quot;</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>        <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.8</span>, <span class="at">size =</span> <span class="fl">3.4</span>, <span class="at">color =</span> ej_ink2, <span class="at">fontface =</span> <span class="st">&quot;bold&quot;</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    ) <span class="sc">+</span></span>
 <span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Sum of Main Numbers Over Time&quot;</span>,</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Date&quot;</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Sum of Main Numbers&quot;</span></span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div>
-<p><img src="time-series_files/figure-html/unnamed-chunk-1-1.png" width="960" /></p>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Sum of the Five Main Numbers, Every Draw Since 2012&quot;</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;The dark trend line never escapes the neighbourhood of the theoretical mean&quot;</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Sum of main numbers&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="time-series_files/figure-html/sum-over-time-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Monthly average of main numbers</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>results<span class="sc">$</span>month_year <span class="ot">&lt;-</span> <span class="fu">format</span>(results<span class="sc">$</span>draw_date, <span class="st">&quot;%Y-%m&quot;</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>monthly_avg <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(main_avg <span class="sc">~</span> month_year, <span class="at">data =</span> results, <span class="at">FUN =</span> mean)</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>monthly_avg<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(monthly_avg<span class="sc">$</span>month_year, <span class="st">&quot;-01&quot;</span>))</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_avg, <span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> main_avg)) <span class="sc">+</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;darkgreen&quot;</span>) <span class="sc">+</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Monthly Average of Main Numbers&quot;</span>,</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Month&quot;</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Average Value&quot;</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
-<p><img src="time-series_files/figure-html/unnamed-chunk-1-2.png" width="960" /></p>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> ej_blue, <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> ej_blue_dark, <span class="at">size =</span> <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">25.5</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> ej_ink, <span class="at">linewidth =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Monthly Average of the Main Numbers&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Expected value 25.5 - months wobble around it and always come home&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Average main number&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="time-series_files/figure-html/monthly-average-1.png" width="100%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="numbers-over-time" class="section level2">
 <h2>Numbers Over Time</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Create a plot of the main numbers over time</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>main_numbers_time <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2024</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2025</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="fu">select</span>(draw_date, main_1, main_2, main_3, main_4, main_5) <span class="sc">%&gt;%</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>        <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;main_&quot;</span>),</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>        <span class="at">names_to =</span> <span class="st">&quot;position&quot;</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">&quot;number&quot;</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    )</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="fu">ggplot</span>(main_numbers_time, <span class="fu">aes</span>(<span class="at">x =</span> draw_date, <span class="at">y =</span> number, <span class="at">color =</span> position)) <span class="sc">+</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="co"># geom_smooth(se=F) +</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">&quot;Set1&quot;</span>, <span class="at">name =</span> <span class="st">&quot;Ball Position&quot;</span>) <span class="sc">+</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="at">by =</span> <span class="dv">5</span>)) <span class="sc">+</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Main Numbers Over Time (2022-2025)&quot;</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Tracking the 5 main numbers drawn in each Eurojackpot draw&quot;</span>,</span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Draw Date&quot;</span>,</span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Number Value (1-50)&quot;</span></span>
+<p>Zooming into the most recent seasons: each line is one of the five
+sorted ball positions. The fan-shaped bands are order statistics at work
+— the smallest ball lives low, the largest lives high, and everything
+shuffles inside its lane:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>main_numbers_time <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2024</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="fu">select</span>(draw_date, main_1, main_2, main_3, main_4, main_5) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>        <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&quot;main_&quot;</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>        <span class="at">names_to =</span> <span class="st">&quot;position&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">&quot;number&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">position =</span> <span class="fu">factor</span>(position,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>        <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">&quot;main_&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;1st (lowest)&quot;</span>, <span class="st">&quot;2nd&quot;</span>, <span class="st">&quot;3rd&quot;</span>, <span class="st">&quot;4th&quot;</span>, <span class="st">&quot;5th (highest)&quot;</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    ))</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="fu">ggplot</span>(main_numbers_time, <span class="fu">aes</span>(<span class="at">x =</span> draw_date, <span class="at">y =</span> number, <span class="at">color =</span> position)) <span class="sc">+</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="at">linewidth =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">ej_ramp</span>(<span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="at">by =</span> <span class="dv">10</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">51</span>)) <span class="sc">+</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;The Five Sorted Ball Positions, 2024-2025&quot;</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Positions are sorted within each draw, so the lanes never cross - the spacing between them is pure chance&quot;</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Number value (1-50)&quot;</span>, <span class="at">caption =</span> ej_caption</span>
 <span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,</span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>    )</span></code></pre></div>
-<p><img src="time-series_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>))</span></code></pre></div>
+<p><img src="time-series_files/figure-html/positions-over-time-1.png" width="100%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="standard-deviation-over-time" class="section level2">
-<h2>Standard Deviation Over Time</h2>
+<div id="spread-within-a-draw" class="section level2">
+<h2>Spread Within a Draw</h2>
+<p>How scattered are the five numbers of a single draw? The standard
+deviation per draw has a theoretical resting place too, and the trend
+line refuses to leave it:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>std_dev_over_time <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2024</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2025</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2024</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="fu">select</span>(draw_date, main_1, main_2, main_3, main_4, main_5) <span class="sc">%&gt;%</span></span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">std_dev =</span> <span class="fu">sd</span>(<span class="fu">c</span>(main_1, main_2, main_3, main_4, main_5))) <span class="sc">%&gt;%</span></span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="fu">ggplot</span>(std_dev_over_time, <span class="fu">aes</span>(<span class="at">x =</span> draw_date, <span class="at">y =</span> std_dev)) <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="sc">+</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="sc">+</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;#86b6ef&quot;</span>, <span class="at">linewidth =</span> <span class="fl">0.45</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> ej_blue) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> ej_blue_deep, <span class="at">linewidth =</span> <span class="fl">1.05</span>, <span class="at">fill =</span> <span class="st">&quot;#cde2fb&quot;</span>) <span class="sc">+</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>)) <span class="sc">+</span></span>
 <span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Standard Deviation of Main Numbers Over Time (2022-2025)&quot;</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Higher values indicate more spread out numbers in a draw&quot;</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Draw Date&quot;</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Standard Deviation&quot;</span></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>)) <span class="sc">+</span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>    )</span></code></pre></div>
-<p><img src="time-series_files/figure-html/unnamed-chunk-3-1.png" width="960" /></p>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Spread of the Main Numbers per Draw, 2024-2025&quot;</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Higher values mean the five numbers were more scattered across 1-50&quot;</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Standard deviation within the draw&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="time-series_files/figure-html/std-dev-1.png" width="100%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="seasonal-patterns" class="section level2">
 <h2>Seasonal Patterns</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Analyze if there are any seasonal patterns</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>monthly_analysis <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>        <span class="at">draws =</span> <span class="fu">n</span>(),</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>        <span class="at">avg_main_1 =</span> <span class="fu">mean</span>(main_1),</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>        <span class="at">avg_main_5 =</span> <span class="fu">mean</span>(main_5),</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>        <span class="at">avg_euro_1 =</span> <span class="fu">mean</span>(euro_1),</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>        <span class="at">avg_euro_2 =</span> <span class="fu">mean</span>(euro_2),</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>        <span class="at">avg_std_dev =</span> <span class="fu">mean</span>(<span class="fu">sd</span>(<span class="fu">c</span>(main_1, main_2, main_3, main_4, main_5)), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">month_name =</span> month.name[<span class="fu">as.numeric</span>(month)])</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co"># Plot monthly patterns</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_analysis, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(month_name, <span class="at">levels =</span> month.name), <span class="at">y =</span> avg_std_dev)) <span class="sc">+</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Average Standard Deviation of Main Numbers by Month&quot;</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Month&quot;</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">&quot;Average Standard Deviation&quot;</span></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
-<p><img src="time-series_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
+<p>Do summer draws behave differently from winter ones? Averaging each
+draw’s internal spread by calendar month gives every folk theory a fair
+shot:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>monthly_analysis <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">draw_sd =</span> <span class="fu">sd</span>(<span class="fu">c</span>(main_1, main_2, main_3, main_4, main_5))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>        <span class="at">draws =</span> <span class="fu">n</span>(),</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>        <span class="at">avg_std_dev =</span> <span class="fu">mean</span>(draw_sd),</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>        <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">month_name =</span> <span class="fu">factor</span>(month.name[<span class="fu">as.numeric</span>(month)], <span class="at">levels =</span> month.name))</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="fu">ggplot</span>(monthly_analysis, <span class="fu">aes</span>(<span class="at">x =</span> month_name, <span class="at">y =</span> avg_std_dev)) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> ej_blue, <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(monthly_analysis<span class="sc">$</span>avg_std_dev) <span class="sc">*</span> <span class="fl">1.15</span>)) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Average Within-Draw Spread by Calendar Month&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;No month is special - the flat skyline is the finding&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Average standard deviation&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>        <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="time-series_files/figure-html/seasonal-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="pull-stat">
+<span class="big">127.5, forever</span><span class="why">Fourteen years
+of draw sums orbit the theoretical mean without ever committing to a
+direction. That’s not boring — that’s a machine doing its one job
+flawlessly.</span>
+</div>
 <div class="navigation-buttons">
 <p><a href="frequency-analysis.html" class="prev-button"><i class="fa fa-arrow-left"></i>
 Previous: Frequency Analysis</a>
@@ -635,14 +654,100 @@ Previous: Frequency Analysis</a>
 </div>
 
 <footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <p class="text-muted">© 2025 Eurojackpot Analysis | Created with <a href="https://rmarkdown.rstudio.com">R Markdown</a></p>
-      </div>
-    </div>
-  </div>
-</footer> 
+  <div class="footer-brand">Eurojackpot Analysis</div>
+  <p class="footer-note">
+    Every chart on this site is generated from the raw draw history with reproducible R code —
+    click any “Code” button to see exactly how. Lottery draws are independent random events:
+    nothing here can predict winning numbers, and it never spends better than it entertains.
+  </p>
+  <p>© 2025 Eurojackpot Analysis · Built with <a href="https://rmarkdown.rstudio.com">R Markdown</a> ·
+    <a href="https://github.com/eonurk/eurojackpot">Source on GitHub</a></p>
+</footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* reading progress bar */
+  var bar = document.createElement("div");
+  bar.id = "ej-progress";
+  document.body.appendChild(bar);
+  var ticking = false;
+  function paint() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    ticking = false;
+  }
+  document.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(paint); }
+  }, { passive: true });
+  paint();
+
+  /* highlight the current page in the navbar */
+  var here = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".navbar a[href]").forEach(function (a) {
+    if (a.getAttribute("href") === here) {
+      var li = a.closest("li");
+      if (li) li.classList.add("active");
+    }
+  });
+
+  /* wrap tables so they scroll sideways on small screens */
+  document.querySelectorAll(".main-container table").forEach(function (t) {
+    if (t.closest(".table-scroll") || t.closest(".pagedtable")) return;
+    var w = document.createElement("div");
+    w.className = "table-scroll";
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  if (reduced || !("IntersectionObserver" in window)) return;
+
+  /* scroll-reveal */
+  var sel = [
+    ".main-container .section > h2", ".main-container .section > h3",
+    ".main-container .section > p", ".main-container > p",
+    ".main-container .table-scroll", ".main-container .info-box",
+    ".main-container .pull-stat", ".main-container pre",
+    ".stat-card", ".page-card", ".navigation-buttons"
+  ].join(", ");
+  var els = [].slice.call(document.querySelectorAll(sel));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -7% 0px", threshold: 0.04 });
+  els.forEach(function (el, i) {
+    el.classList.add("rv");
+    el.style.transitionDelay = (i % 4) * 60 + "ms";
+    io.observe(el);
+  });
+
+  /* animated counters: <span class="count-up" data-target="828">828</span> */
+  var counters = [].slice.call(document.querySelectorAll(".count-up"));
+  if (counters.length) {
+    var io2 = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io2.unobserve(e.target);
+        var el = e.target;
+        var target = parseFloat(el.getAttribute("data-target") || "0");
+        var t0 = null, dur = 1600;
+        function tick(ts) {
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toLocaleString("en-US");
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { el.textContent = "0"; io2.observe(el); });
+  }
+})();
+</script>
 
 
 </div>

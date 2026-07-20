@@ -38,8 +38,11 @@
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#101010">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -586,16 +589,18 @@ are clearly visible in the data:</p>
 </tbody>
 </table>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> weekday)) <span class="sc">+</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Friday&quot;</span> <span class="ot">=</span> <span class="st">&quot;steelblue&quot;</span>, <span class="st">&quot;Tuesday&quot;</span> <span class="ot">=</span> <span class="st">&quot;salmon&quot;</span>), <span class="at">name =</span> <span class="st">&quot;Draw day&quot;</span>) <span class="sc">+</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">width =</span> <span class="fl">0.72</span>) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Friday&quot;</span> <span class="ot">=</span> ej_blue, <span class="st">&quot;Tuesday&quot;</span> <span class="ot">=</span> ej_green), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Draws per Year, Split by Weekday&quot;</span>,</span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Tuesday draws only exist since the March 2022 relaunch - the game doubled its pace&quot;</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span>, <span class="at">caption =</span> ej_caption</span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
-<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>        <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>Why this matters for prediction-hunting:</p>
 <ul>
 <li><strong>Euro numbers 9-12 are not comparable to 1-8.</strong>
@@ -634,16 +639,15 @@ effect evaporates:</p>
 <span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>number, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>)</span>
 <span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="fu">ggplot</span>(euro_df, <span class="fu">aes</span>(<span class="at">x =</span> number, <span class="at">y =</span> count, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> <span class="st">&quot;salmon&quot;</span>, <span class="st">&quot;Expected (exposure-adjusted)&quot;</span> <span class="ot">=</span> <span class="st">&quot;grey40&quot;</span>), <span class="at">name =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>, <span class="at">width =</span> <span class="fl">0.72</span>) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> ej_gold, <span class="st">&quot;Expected (exposure-adjusted)&quot;</span> <span class="ot">=</span> ej_muted), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
 <span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Euro Number Appearances: Observed vs Exposure-Adjusted Expectation&quot;</span>,</span>
 <span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;9-10 joined the pool in Oct 2014, 11-12 in Mar 2022 - they are new, not cold&quot;</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Euro number&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Appearances&quot;</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Euro number&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Appearances&quot;</span>, <span class="at">caption =</span> ej_caption</span>
 <span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
-<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-3-1.png" width="960" /></p>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>())</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>chi_naive_stat <span class="ot">&lt;-</span> <span class="fu">sum</span>((euro_obs <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="dv">12</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="dv">12</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>chi_adj_stat <span class="ot">&lt;-</span> <span class="fu">sum</span>((euro_obs <span class="sc">-</span> euro_expected)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> euro_expected)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
@@ -728,20 +732,20 @@ about 82.8 times, with a 95% chance band of roughly ±17:</p>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="fu">ggplot</span>(main_df, <span class="fu">aes</span>(<span class="at">x =</span> number, <span class="at">y =</span> count)) <span class="sc">+</span></span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="fu">ifelse</span>(main_df<span class="sc">$</span>count <span class="sc">&lt;</span> expected_main <span class="sc">-</span> band <span class="sc">|</span> main_df<span class="sc">$</span>count <span class="sc">&gt;</span> expected_main <span class="sc">+</span> band,</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>        <span class="st">&quot;firebrick&quot;</span>, <span class="st">&quot;skyblue&quot;</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    )) <span class="sc">+</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> expected_main, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(expected_main <span class="sc">-</span> band, expected_main <span class="sc">+</span> band), <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> <span class="st">&quot;grey30&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Main Number Counts vs the 95% Chance Band&quot;</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>            <span class="st">&quot;%d of 50 numbers fall outside the band - about %.0f expected by pure chance&quot;</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>            outside, <span class="dv">50</span> <span class="sc">*</span> <span class="fl">0.05</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>        ),</span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Main number (1-50)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Appearances&quot;</span></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div>
-<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>        ej_red, ej_blue</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    ), <span class="at">width =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> expected_main, <span class="at">color =</span> ej_ink, <span class="at">linewidth =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(expected_main <span class="sc">-</span> band, expected_main <span class="sc">+</span> band), <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> ej_muted) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="dv">5</span>, <span class="dv">50</span>, <span class="at">by =</span> <span class="dv">5</span>))) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Main Number Counts vs the 95% Chance Band&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>            <span class="st">&quot;%d of 50 numbers fall outside the band - about %.0f expected by pure chance&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>            outside, <span class="dv">50</span> <span class="sc">*</span> <span class="fl">0.05</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>        ),</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Main number (1-50)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Appearances&quot;</span>, <span class="at">caption =</span> ej_caption</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>The result: 1 number(s) poke marginally outside the band, versus ~2-3
 expected as false positives from chance alone. The formal chi-squared
 test across all 50 numbers gives χ² = 31.2 on 49 degrees of freedom,
@@ -770,18 +774,18 @@ randomness gaps should follow a geometric distribution with mean 10:</p>
 <span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>)</span>
 <span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
 <span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">data =</span> gap_counts, <span class="fu">aes</span>(<span class="at">x =</span> gaps, <span class="at">y =</span> Freq), <span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> geo, <span class="fu">aes</span>(<span class="at">x =</span> gap, <span class="at">y =</span> expected), <span class="at">color =</span> <span class="st">&quot;firebrick&quot;</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">data =</span> gap_counts, <span class="fu">aes</span>(<span class="at">x =</span> gaps, <span class="at">y =</span> Freq), <span class="at">fill =</span> ej_blue, <span class="at">width =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> geo, <span class="fu">aes</span>(<span class="at">x =</span> gap, <span class="at">y =</span> expected), <span class="at">color =</span> ej_ink, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
 <span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
 <span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Waiting Times Between a Number&#39;s Appearances vs the Memoryless Ideal&quot;</span>,</span>
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>            <span class="st">&quot;%d observed gaps, mean %.1f draws (theory: 10.0) - the red curve is the geometric distribution&quot;</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>            <span class="st">&quot;%d observed gaps, mean %.1f draws (theory: 10.0) - the dark curve is the geometric distribution&quot;</span>,</span>
 <span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>            <span class="fu">length</span>(gaps), <span class="fu">mean</span>(gaps)</span>
 <span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>        ),</span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Draws between consecutive appearances of the same number&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span></span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div>
-<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Draws between consecutive appearances of the same number&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>        <span class="at">caption =</span> ej_caption</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>The observed gaps hug the geometric curve, including its long tail —
 the longest drought in the dataset is 78 draws. And here is the direct
 backtest of “due”: across the whole history, every time a number had
@@ -855,6 +859,11 @@ opportunities = <strong>9.96%</strong>, against a pure-chance baseline
 of 10.00%. Being overdue changes nothing. The numbers at the top of the
 table above are exactly as likely as any other number next draw:
 10%.</p>
+<div class="pull-stat">
+<span class="big">9.96% vs 10.00%</span><span class="why">Hit rate of
+“overdue” numbers on the very next draw, tested across the entire
+history. Being due is not a thing.</span>
+</div>
 </div>
 <div id="do-draws-remember-the-previous-draw" class="section level2">
 <h2>5. Do Draws Remember the Previous Draw?</h2>
@@ -871,19 +880,19 @@ the count of repeats follows a hypergeometric distribution with mean
 <span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>k, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>)</span>
 <span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
 <span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="fu">ggplot</span>(rep_df, <span class="fu">aes</span>(<span class="at">x =</span> k, <span class="at">y =</span> count, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> <span class="st">&quot;orchid&quot;</span>, <span class="st">&quot;Expected&quot;</span> <span class="ot">=</span> <span class="st">&quot;grey40&quot;</span>), <span class="at">name =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>, <span class="at">width =</span> <span class="fl">0.72</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> ej_blue, <span class="st">&quot;Expected&quot;</span> <span class="ot">=</span> ej_muted), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
 <span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Numbers Repeating From the Previous Draw&quot;</span>,</span>
 <span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
 <span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>            <span class="st">&quot;Mean %.3f repeats per draw (theory: 0.500) - the distribution matches the hypergeometric exactly&quot;</span>,</span>
 <span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>            <span class="fu">mean</span>(rep_counts)</span>
 <span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>        ),</span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;How many of the 5 main numbers also appeared in the previous draw&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span></span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
-<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-8-1.png" width="960" /></p>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;How many of the 5 main numbers also appeared in the previous draw&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>        <span class="at">caption =</span> ej_caption</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>())</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>Second, serial correlation: does a high-sum draw tend to follow a
 high-sum draw?</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>draw_sums <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(mains)</span>
@@ -1006,17 +1015,19 @@ matches, 42.3% with at least one match</caption>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>bt_plot <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">strategy =</span> <span class="fu">factor</span>(<span class="fu">colnames</span>(bt), <span class="at">levels =</span> <span class="fu">colnames</span>(bt)), <span class="at">mean =</span> <span class="fu">colMeans</span>(bt), <span class="at">ci =</span> ci)</span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="fu">ggplot</span>(bt_plot, <span class="fu">aes</span>(<span class="at">x =</span> strategy, <span class="at">y =</span> mean)) <span class="sc">+</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean <span class="sc">-</span> ci, <span class="at">ymax =</span> mean <span class="sc">+</span> ci), <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;firebrick&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> ej_blue, <span class="at">width =</span> <span class="fl">0.68</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean <span class="sc">-</span> ci, <span class="at">ymax =</span> mean <span class="sc">+</span> ci), <span class="at">width =</span> <span class="fl">0.22</span>, <span class="at">color =</span> ej_ink, <span class="at">linewidth =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.5</span>, <span class="at">color =</span> ej_red, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
 <span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
 <span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;No Strategy Beats the Red Line of Pure Chance&quot;</span>,</span>
 <span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Mean main-number matches per draw with 95% confidence intervals; chance = 0.500&quot;</span>,</span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Mean matches per draw&quot;</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>        <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">&quot;Mean matches per draw&quot;</span>, <span class="at">caption =</span> ej_caption</span>
 <span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">20</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
-<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>        <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">20</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>    )</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>Every strategy — including the ones people pay for in “lottery
 systems” — lands within noise of 0.500, and in this run the purely
 random picks happen to edge out all four “informed” strategies. That is
@@ -1050,17 +1061,16 @@ that depends only on jackpot odds (fixed by the rules era, see Section
 <span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>rollover<span class="sc">$</span>p_rollover <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span> <span class="sc">/</span> odds_by_era[<span class="fu">as.character</span>(rollover<span class="sc">$</span>era)])<span class="sc">^</span>rollover<span class="sc">$</span>tickets</span>
 <span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a></span>
 <span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="fu">ggplot</span>(rollover, <span class="fu">aes</span>(<span class="at">x =</span> tickets <span class="sc">/</span> <span class="fl">1e6</span>, <span class="at">y =</span> p_rollover, <span class="at">color =</span> era)) <span class="sc">+</span></span>
-<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
 <span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> x), <span class="st">&quot;%&quot;</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;grey60&quot;</span>, <span class="st">&quot;steelblue&quot;</span>, <span class="st">&quot;firebrick&quot;</span>), <span class="at">name =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">ej_ramp</span>(<span class="dv">3</span>), <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
 <span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Probability the Jackpot Rolls Over, by Tickets Sold&quot;</span>,</span>
 <span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;The 2022 rule change made rollovers far more likely - which is exactly why pots now climb to the 120M cap&quot;</span>,</span>
-<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Tickets sold (millions)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;P(no jackpot winner)&quot;</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Tickets sold (millions)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;P(no jackpot winner)&quot;</span>, <span class="at">caption =</span> ej_caption</span>
 <span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
-<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-12-1.png" width="960" /></p>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">nrow =</span> <span class="dv">1</span>))</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>With ~30 million tickets sold, the current rules roll the jackpot
 over about 81% of the time — under the 2012 rules that figure was 60%.
 Long rollover chains, and therefore giant pots, are a designed-in
@@ -1130,14 +1140,100 @@ Previous: Number Patterns</a></p>
 </div>
 
 <footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <p class="text-muted">© 2025 Eurojackpot Analysis | Created with <a href="https://rmarkdown.rstudio.com">R Markdown</a></p>
-      </div>
-    </div>
-  </div>
-</footer> 
+  <div class="footer-brand">Eurojackpot Analysis</div>
+  <p class="footer-note">
+    Every chart on this site is generated from the raw draw history with reproducible R code —
+    click any “Code” button to see exactly how. Lottery draws are independent random events:
+    nothing here can predict winning numbers, and it never spends better than it entertains.
+  </p>
+  <p>© 2025 Eurojackpot Analysis · Built with <a href="https://rmarkdown.rstudio.com">R Markdown</a> ·
+    <a href="https://github.com/eonurk/eurojackpot">Source on GitHub</a></p>
+</footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* reading progress bar */
+  var bar = document.createElement("div");
+  bar.id = "ej-progress";
+  document.body.appendChild(bar);
+  var ticking = false;
+  function paint() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    ticking = false;
+  }
+  document.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(paint); }
+  }, { passive: true });
+  paint();
+
+  /* highlight the current page in the navbar */
+  var here = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".navbar a[href]").forEach(function (a) {
+    if (a.getAttribute("href") === here) {
+      var li = a.closest("li");
+      if (li) li.classList.add("active");
+    }
+  });
+
+  /* wrap tables so they scroll sideways on small screens */
+  document.querySelectorAll(".main-container table").forEach(function (t) {
+    if (t.closest(".table-scroll") || t.closest(".pagedtable")) return;
+    var w = document.createElement("div");
+    w.className = "table-scroll";
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  if (reduced || !("IntersectionObserver" in window)) return;
+
+  /* scroll-reveal */
+  var sel = [
+    ".main-container .section > h2", ".main-container .section > h3",
+    ".main-container .section > p", ".main-container > p",
+    ".main-container .table-scroll", ".main-container .info-box",
+    ".main-container .pull-stat", ".main-container pre",
+    ".stat-card", ".page-card", ".navigation-buttons"
+  ].join(", ");
+  var els = [].slice.call(document.querySelectorAll(sel));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -7% 0px", threshold: 0.04 });
+  els.forEach(function (el, i) {
+    el.classList.add("rv");
+    el.style.transitionDelay = (i % 4) * 60 + "ms";
+    io.observe(el);
+  });
+
+  /* animated counters: <span class="count-up" data-target="828">828</span> */
+  var counters = [].slice.call(document.querySelectorAll(".count-up"));
+  if (counters.length) {
+    var io2 = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io2.unobserve(e.target);
+        var el = e.target;
+        var target = parseFloat(el.getAttribute("data-target") || "0");
+        var t0 = null, dur = 1600;
+        function tick(ts) {
+          if (!t0) t0 = ts;
+          var p = Math.min((ts - t0) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toLocaleString("en-US");
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { el.textContent = "0"; io2.observe(el); });
+  }
+})();
+</script>
 
 
 </div>

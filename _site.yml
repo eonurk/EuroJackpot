@@ -2,7 +2,7 @@ name: "eurojackpot-analysis"
 title: "Eurojackpot Analysis"
 description: "Statistical analysis of Eurojackpot lottery results"
 output_dir: "docs"
-exclude: ["analysis.rmd"]
+exclude: ["analysis.rmd", "theme_ej.R", "build.R"]
 navbar:
   title: "Eurojackpot Analysis"
   type: inverse

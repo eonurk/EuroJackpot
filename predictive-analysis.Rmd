@@ -3,11 +3,15 @@ title: "Predicting the Next Pot?"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(
+    echo = TRUE, warning = FALSE, message = FALSE,
+    dpi = 144, out.width = "100%", fig.align = "center"
+)
 # Load necessary libraries
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+source("theme_ej.R")
 
 # Read the data (assuming this was already done in data-overview.Rmd)
 # If you're using this page independently, uncomment and run the data loading code
@@ -87,15 +91,17 @@ knitr::kable(era_summary,
 
 ```{r}
 ggplot(results, aes(x = year, fill = weekday)) +
-    geom_bar() +
-    scale_fill_manual(values = c("Friday" = "steelblue", "Tuesday" = "salmon"), name = "Draw day") +
+    geom_bar(width = 0.72) +
+    scale_fill_manual(values = c("Friday" = ej_blue, "Tuesday" = ej_green), name = NULL) +
     labs(
         title = "Draws per Year, Split by Weekday",
         subtitle = "Tuesday draws only exist since the March 2022 relaunch - the game doubled its pace",
-        x = "Year", y = "Number of draws"
+        x = NULL, y = "Number of draws", caption = ej_caption
     ) +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1)
+    )
 ```
 
 Why this matters for prediction-hunting:
@@ -123,15 +129,14 @@ euro_df <- data.frame(
     pivot_longer(cols = -number, names_to = "type", values_to = "count")
 
 ggplot(euro_df, aes(x = number, y = count, fill = type)) +
-    geom_col(position = "dodge") +
-    scale_fill_manual(values = c("Observed" = "salmon", "Expected (exposure-adjusted)" = "grey40"), name = "") +
+    geom_col(position = "dodge", width = 0.72) +
+    scale_fill_manual(values = c("Observed" = ej_gold, "Expected (exposure-adjusted)" = ej_muted), name = NULL) +
     labs(
         title = "Euro Number Appearances: Observed vs Exposure-Adjusted Expectation",
         subtitle = "9-10 joined the pool in Oct 2014, 11-12 in Mar 2022 - they are new, not cold",
-        x = "Euro number", y = "Appearances"
+        x = "Euro number", y = "Appearances", caption = ej_caption
     ) +
-    theme_minimal() +
-    theme(legend.position = "bottom")
+    theme(panel.grid.major.x = element_blank())
 ```
 
 ```{r}
@@ -179,19 +184,19 @@ chisq_main <- chisq.test(main_obs)
 
 ggplot(main_df, aes(x = number, y = count)) +
     geom_col(fill = ifelse(main_df$count < expected_main - band | main_df$count > expected_main + band,
-        "firebrick", "skyblue"
-    )) +
-    geom_hline(yintercept = expected_main, color = "black") +
-    geom_hline(yintercept = c(expected_main - band, expected_main + band), linetype = "dashed", color = "grey30") +
+        ej_red, ej_blue
+    ), width = 0.75) +
+    geom_hline(yintercept = expected_main, color = ej_ink, linewidth = 0.55) +
+    geom_hline(yintercept = c(expected_main - band, expected_main + band), linetype = "dashed", color = ej_muted) +
+    scale_x_continuous(breaks = c(1, seq(5, 50, by = 5))) +
     labs(
         title = "Main Number Counts vs the 95% Chance Band",
         subtitle = sprintf(
             "%d of 50 numbers fall outside the band - about %.0f expected by pure chance",
             outside, 50 * 0.05
         ),
-        x = "Main number (1-50)", y = "Appearances"
-    ) +
-    theme_minimal()
+        x = "Main number (1-50)", y = "Appearances", caption = ej_caption
+    )
 ```
 
 The result: `r outside` number(s) poke marginally outside the band, versus ~2-3 expected as false positives from chance alone. The formal chi-squared test across all 50 numbers gives χ² = `r sprintf("%.1f", unname(chisq_main$statistic))` on 49 degrees of freedom, **p = `r sprintf("%.2f", chisq_main$p.value)`** — not even close to significant. The gap between the "hottest" number (`r which.max(main_obs)`, seen `r max(main_obs)` times) and the "coldest" (`r which.min(main_obs)`, seen `r min(main_obs)` times) is exactly the spread a perfectly fair machine produces over `r n` draws. Hot and cold rankings carry **zero** signal about the next draw.
@@ -212,17 +217,17 @@ geo <- data.frame(
 )
 
 ggplot() +
-    geom_col(data = gap_counts, aes(x = gaps, y = Freq), fill = "steelblue", alpha = 0.8) +
-    geom_line(data = geo, aes(x = gap, y = expected), color = "firebrick", linewidth = 1) +
+    geom_col(data = gap_counts, aes(x = gaps, y = Freq), fill = ej_blue, width = 0.8) +
+    geom_line(data = geo, aes(x = gap, y = expected), color = ej_ink, linewidth = 1) +
     labs(
         title = "Waiting Times Between a Number's Appearances vs the Memoryless Ideal",
         subtitle = sprintf(
-            "%d observed gaps, mean %.1f draws (theory: 10.0) - the red curve is the geometric distribution",
+            "%d observed gaps, mean %.1f draws (theory: 10.0) - the dark curve is the geometric distribution",
             length(gaps), mean(gaps)
         ),
-        x = "Draws between consecutive appearances of the same number", y = "Count"
-    ) +
-    theme_minimal()
+        x = "Draws between consecutive appearances of the same number", y = "Count",
+        caption = ej_caption
+    )
 ```
 
 The observed gaps hug the geometric curve, including its long tail — the longest drought in the dataset is `r max(gaps)` draws. And here is the direct backtest of "due": across the whole history, every time a number had been absent for **15 or more draws**, did it hit the very next draw more than the baseline 10%?
@@ -259,6 +264,8 @@ knitr::kable(overdue_now,
 
 Result: overdue numbers hit the next draw `r overdue_hits` times in `r format(overdue_trials, big.mark = ",")` opportunities = **`r sprintf("%.2f%%", 100 * overdue_hits / overdue_trials)`**, against a pure-chance baseline of 10.00%. Being overdue changes nothing. The numbers at the top of the table above are exactly as likely as any other number next draw: 10%.
 
+<div class="pull-stat"><span class="big">`r sprintf("%.2f%%", 100 * overdue_hits / overdue_trials)` vs 10.00%</span><span class="why">Hit rate of "overdue" numbers on the very next draw, tested across the entire history. Being due is not a thing.</span></div>
+
 ## 5. Do Draws Remember the Previous Draw?
 
 Two quick memory checks the other pages never run. First, how many main numbers repeat from one draw to the next? If draws are independent, the count of repeats follows a hypergeometric distribution with mean 0.5:
@@ -273,18 +280,18 @@ rep_df <- data.frame(
     pivot_longer(cols = -k, names_to = "type", values_to = "count")
 
 ggplot(rep_df, aes(x = k, y = count, fill = type)) +
-    geom_col(position = "dodge") +
-    scale_fill_manual(values = c("Observed" = "orchid", "Expected" = "grey40"), name = "") +
+    geom_col(position = "dodge", width = 0.72) +
+    scale_fill_manual(values = c("Observed" = ej_blue, "Expected" = ej_muted), name = NULL) +
     labs(
         title = "Numbers Repeating From the Previous Draw",
         subtitle = sprintf(
             "Mean %.3f repeats per draw (theory: 0.500) - the distribution matches the hypergeometric exactly",
             mean(rep_counts)
         ),
-        x = "How many of the 5 main numbers also appeared in the previous draw", y = "Number of draws"
+        x = "How many of the 5 main numbers also appeared in the previous draw", y = "Number of draws",
+        caption = ej_caption
     ) +
-    theme_minimal() +
-    theme(legend.position = "bottom")
+    theme(panel.grid.major.x = element_blank())
 ```
 
 Second, serial correlation: does a high-sum draw tend to follow a high-sum draw?
@@ -352,16 +359,18 @@ ci <- 1.96 * apply(bt, 2, sd) / sqrt(nrow(bt))
 bt_plot <- data.frame(strategy = factor(colnames(bt), levels = colnames(bt)), mean = colMeans(bt), ci = ci)
 
 ggplot(bt_plot, aes(x = strategy, y = mean)) +
-    geom_col(fill = "steelblue", alpha = 0.8) +
-    geom_errorbar(aes(ymin = mean - ci, ymax = mean + ci), width = 0.25) +
-    geom_hline(yintercept = 0.5, color = "firebrick", linetype = "dashed", linewidth = 1) +
+    geom_col(fill = ej_blue, width = 0.68) +
+    geom_errorbar(aes(ymin = mean - ci, ymax = mean + ci), width = 0.22, color = ej_ink, linewidth = 0.55) +
+    geom_hline(yintercept = 0.5, color = ej_red, linetype = "dashed", linewidth = 0.9) +
     labs(
         title = "No Strategy Beats the Red Line of Pure Chance",
         subtitle = "Mean main-number matches per draw with 95% confidence intervals; chance = 0.500",
-        x = "", y = "Mean matches per draw"
+        x = NULL, y = "Mean matches per draw", caption = ej_caption
     ) +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 20, hjust = 1))
+    theme(
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 20, hjust = 1)
+    )
 ```
 
 Every strategy — including the ones people pay for in "lottery systems" — lands within noise of 0.500, and in this run the purely random picks happen to edge out all four "informed" strategies. That is not a joke; it is the point. **Nothing computable from past draws moves the odds of the next one.**
@@ -390,16 +399,15 @@ rollover$era <- factor(rollover$era, levels = names(odds_by_era))
 rollover$p_rollover <- (1 - 1 / odds_by_era[as.character(rollover$era)])^rollover$tickets
 
 ggplot(rollover, aes(x = tickets / 1e6, y = p_rollover, color = era)) +
-    geom_line(linewidth = 1) +
+    geom_line(linewidth = 1.1) +
     scale_y_continuous(labels = function(x) paste0(round(100 * x), "%"), limits = c(0, 1)) +
-    scale_color_manual(values = c("grey60", "steelblue", "firebrick"), name = "") +
+    scale_color_manual(values = ej_ramp(3), name = NULL) +
     labs(
         title = "Probability the Jackpot Rolls Over, by Tickets Sold",
         subtitle = "The 2022 rule change made rollovers far more likely - which is exactly why pots now climb to the 120M cap",
-        x = "Tickets sold (millions)", y = "P(no jackpot winner)"
+        x = "Tickets sold (millions)", y = "P(no jackpot winner)", caption = ej_caption
     ) +
-    theme_minimal() +
-    theme(legend.position = "bottom")
+    guides(color = guide_legend(nrow = 1))
 ```
 
 With ~30 million tickets sold, the current rules roll the jackpot over about `r sprintf("%.0f%%", 100 * (1 - 1 / odds_by_era[3])^3e7)` of the time — under the 2012 rules that figure was `r sprintf("%.0f%%", 100 * (1 - 1 / odds_by_era[1])^3e7)`. Long rollover chains, and therefore giant pots, are a designed-in feature of the current format, not luck. Given the current pot, the rollover streak and a sales estimate, next-draw pot size is a genuinely forecastable quantity — the kind of prediction this dataset *could* support but currently cannot:
