@@ -38,6 +38,22 @@
     }
   });
 
+  /* frame every analysis page as a chapter of one document */
+  var chapterMap = {
+    "data-overview.html": "Chapter 1",
+    "frequency-analysis.html": "Chapter 2",
+    "time-series.html": "Chapter 3",
+    "number-patterns.html": "Chapter 4",
+    "predictive-analysis.html": "Chapter 5"
+  };
+  var titleEl = document.querySelector("#header h1.title");
+  if (titleEl && chapterMap[here]) {
+    var kick = document.createElement("p");
+    kick.className = "chapter-kicker";
+    kick.textContent = chapterMap[here] + " · Eurojackpot Analysis";
+    titleEl.parentNode.insertBefore(kick, titleEl);
+  }
+
   /* wrap tables so they scroll sideways on small screens */
   document.querySelectorAll(".main-container table").forEach(function (t) {
     if (t.closest(".table-scroll") || t.closest(".pagedtable")) return;

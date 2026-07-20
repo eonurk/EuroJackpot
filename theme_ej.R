@@ -28,8 +28,13 @@ ej_ramp <- function(n) colorRampPalette(c("#86b6ef", "#0d366b"))(n)
 
 ej_caption <- "Source: Eurojackpot official draws · github.com/eonurk/eurojackpot"
 
-theme_ej <- function(base_size = 15) {
-    theme_minimal(base_size = base_size) +
+# Chart text uses the same sans as the site's data layer (tables, captions,
+# labels). If Inter is not installed the graphics device silently falls back
+# to the default sans, so rendering never breaks on another machine.
+ej_font <- "Inter"
+
+theme_ej <- function(base_size = 15, base_family = ej_font) {
+    theme_minimal(base_size = base_size, base_family = base_family) +
         theme(
             text = element_text(color = ej_ink2),
             plot.title = element_text(
@@ -59,3 +64,6 @@ theme_ej <- function(base_size = 15) {
 }
 
 theme_set(theme_ej())
+
+# geom_text()/annotate("text") do not inherit the theme family - set it once
+update_geom_defaults("text", list(family = ej_font))
