@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Predicting the Next Pot?</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.1/jquery-3.6.1.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Eurojackpot Analysis</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="data-overview.html">
+    <span class="fa fa-database"></span>
+     
+    Data Overview
+  </a>
+</li>
+<li>
+  <a href="frequency-analysis.html">
+    <span class="fa fa-chart-bar"></span>
+     
+    Frequency Analysis
+  </a>
+</li>
+<li>
+  <a href="time-series.html">
+    <span class="fa fa-chart-line"></span>
+     
+    Time Series
+  </a>
+</li>
+<li>
+  <a href="number-patterns.html">
+    <span class="fa fa-puzzle-piece"></span>
+     
+    Number Patterns
+  </a>
+</li>
+<li>
+  <a href="predictive-analysis.html">
+    <span class="fa fa-dice"></span>
+     
+    Predicting the Pot
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/eonurk/eurojackpot">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Predicting the Next Pot?</h1>
+
+</div>
+
+
+<p>Every page of this site slices the historical draws a different way,
+and the obvious question behind all of them is: <em>does any of it help
+predict the next draw?</em> This page tackles that question head-on.
+First it shows two structural facts hiding in the data that the other
+pages silently ignore — and that distort their charts. Then it puts
+every popular prediction idea (hot numbers, cold numbers, “due” numbers,
+repeats) through formal statistical tests and an out-of-sample backtest.
+Finally, it shows the one part of the game that genuinely <em>is</em>
+predictable: not the balls, but the pot.</p>
+<div id="you-are-not-looking-at-one-game-it-changed-twice"
+class="section level2">
+<h2>1. You Are Not Looking at One Game — It Changed Twice</h2>
+<p>The dataset spans 828 draws, but it is <strong>not</strong> one
+homogeneous game. Eurojackpot changed its rules twice, and both changes
+are clearly visible in the data:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>era_summary <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="at">Format =</span> era) <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>        <span class="at">From =</span> <span class="fu">format</span>(<span class="fu">min</span>(draw_date), <span class="st">&quot;%Y-%m-%d&quot;</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>        <span class="at">To =</span> <span class="fu">format</span>(<span class="fu">max</span>(draw_date), <span class="st">&quot;%Y-%m-%d&quot;</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>        <span class="at">Draws =</span> <span class="fu">n</span>(),</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>        <span class="st">`</span><span class="at">Draw days</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ifelse</span>(<span class="fu">n_distinct</span>(weekday) <span class="sc">==</span> <span class="dv">1</span>, <span class="st">&quot;Friday only&quot;</span>, <span class="st">&quot;Tuesday + Friday&quot;</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>        <span class="st">`</span><span class="at">Jackpot odds</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste0</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>            <span class="st">&quot;1 in &quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>            <span class="fu">format</span>(<span class="fu">choose</span>(<span class="dv">50</span>, <span class="dv">5</span>) <span class="sc">*</span> <span class="fu">choose</span>(<span class="fu">first</span>(pool_size), <span class="dv">2</span>), <span class="at">big.mark =</span> <span class="st">&quot;,&quot;</span>, <span class="at">scientific =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>        ),</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>        <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    )</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(era_summary,</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;Three different games hide inside one CSV&quot;</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;r&quot;</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Three different games hide inside one CSV</caption>
+<colgroup>
+<col width="16%" />
+<col width="14%" />
+<col width="14%" />
+<col width="8%" />
+<col width="22%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Format</th>
+<th align="left">From</th>
+<th align="left">To</th>
+<th align="right">Draws</th>
+<th align="left">Draw days</th>
+<th align="right">Jackpot odds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5/50 + 2/8</td>
+<td align="left">2012-03-23</td>
+<td align="left">2014-10-03</td>
+<td align="right">133</td>
+<td align="left">Friday only</td>
+<td align="right">1 in 59,325,280</td>
+</tr>
+<tr class="even">
+<td align="left">5/50 + 2/10</td>
+<td align="left">2014-10-10</td>
+<td align="left">2022-03-25</td>
+<td align="right">390</td>
+<td align="left">Friday only</td>
+<td align="right">1 in 95,344,200</td>
+</tr>
+<tr class="odd">
+<td align="left">5/50 + 2/12</td>
+<td align="left">2022-03-29</td>
+<td align="left">2025-02-25</td>
+<td align="right">305</td>
+<td align="left">Tuesday + Friday</td>
+<td align="right">1 in 139,838,160</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> weekday)) <span class="sc">+</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Friday&quot;</span> <span class="ot">=</span> <span class="st">&quot;steelblue&quot;</span>, <span class="st">&quot;Tuesday&quot;</span> <span class="ot">=</span> <span class="st">&quot;salmon&quot;</span>), <span class="at">name =</span> <span class="st">&quot;Draw day&quot;</span>) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Draws per Year, Split by Weekday&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Tuesday draws only exist since the March 2022 relaunch - the game doubled its pace&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+<p>Why this matters for prediction-hunting:</p>
+<ul>
+<li><strong>Euro numbers 9-12 are not comparable to 1-8.</strong>
+Numbers 9 and 10 have only existed since October 2014, and 11 and 12
+only since March 2022. Any frequency chart that pools all draws (like
+the ones on the Data Overview and Frequency Analysis pages) makes them
+look “cold” purely because they were absent from the machine for
+years.</li>
+<li><strong>The jackpot odds nearly tripled</strong>, from 1 in 59.3
+million to 1 in 139.8 million. That is invisible in the drawn numbers
+but is the single most important driver of how big pots get (Section
+7).</li>
+<li>Any per-year or seasonal comparison that mixes pre- and post-2022
+data compares 52 draws per year against ~105.</li>
+</ul>
+</div>
+<div id="the-cold-euro-numbers-illusion" class="section level2">
+<h2>2. The “Cold Euro Numbers” Illusion</h2>
+<p>Here is the trap in raw counts. Pooled over all 828 draws, euro
+number 3 has appeared 177 times and euro number 11 only 45 times — a
+factor of almost four, and a naive chi-squared test would declare the
+euro numbers wildly non-uniform. But once each number’s expectation
+counts only the draws where it was actually in the pool, the entire
+effect evaporates:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>euro_obs <span class="ot">&lt;-</span> <span class="fu">tabulate</span>(<span class="fu">c</span>(results<span class="sc">$</span>euro_1, results<span class="sc">$</span>euro_2), <span class="at">nbins =</span> <span class="dv">12</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># Expected appearances of number x = sum over draws where x was in the pool of 2/pool_size</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>euro_expected <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="cf">function</span>(x) <span class="fu">sum</span>((<span class="dv">2</span> <span class="sc">/</span> results<span class="sc">$</span>pool_size)[results<span class="sc">$</span>pool_size <span class="sc">&gt;=</span> x]))</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>euro_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="at">number =</span> <span class="fu">factor</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">Observed =</span> euro_obs,</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="st">`</span><span class="at">Expected (exposure-adjusted)</span><span class="st">`</span> <span class="ot">=</span> euro_expected,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>number, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="fu">ggplot</span>(euro_df, <span class="fu">aes</span>(<span class="at">x =</span> number, <span class="at">y =</span> count, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> <span class="st">&quot;salmon&quot;</span>, <span class="st">&quot;Expected (exposure-adjusted)&quot;</span> <span class="ot">=</span> <span class="st">&quot;grey40&quot;</span>), <span class="at">name =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Euro Number Appearances: Observed vs Exposure-Adjusted Expectation&quot;</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;9-10 joined the pool in Oct 2014, 11-12 in Mar 2022 - they are new, not cold&quot;</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Euro number&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Appearances&quot;</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-3-1.png" width="960" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>chi_naive_stat <span class="ot">&lt;-</span> <span class="fu">sum</span>((euro_obs <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="dv">12</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="dv">12</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>chi_adj_stat <span class="ot">&lt;-</span> <span class="fu">sum</span>((euro_obs <span class="sc">-</span> euro_expected)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> euro_expected)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>chi_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="at">Test =</span> <span class="fu">c</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>        <span class="st">&quot;Naive: every number expected equally often (ignores pool changes)&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>        <span class="st">&quot;Exposure-adjusted: expectation counts only draws where the number was in the pool&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    ),</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="st">`</span><span class="at">Chi-squared</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f&quot;</span>, <span class="fu">c</span>(chi_naive_stat, chi_adj_stat)),</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="at">df =</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">11</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="st">`</span><span class="at">p-value</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sapply</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>        <span class="fu">pchisq</span>(<span class="fu">c</span>(chi_naive_stat, chi_adj_stat), <span class="at">df =</span> <span class="dv">11</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>        <span class="cf">function</span>(p) <span class="cf">if</span> (p <span class="sc">&lt;</span> <span class="fl">1e-4</span>) <span class="fu">sprintf</span>(<span class="st">&quot;%.1e&quot;</span>, p) <span class="cf">else</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, p)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    ),</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>    <span class="at">Verdict =</span> <span class="fu">c</span>(</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>        <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">Significant</span><span class="sc">\&quot;</span><span class="st"> - but it is an artifact&quot;</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>        <span class="st">&quot;Perfectly consistent with a fair machine&quot;</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    ),</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(chi_table,</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;The same data, tested twice - only the adjusted test is valid&quot;</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;l&quot;</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>The same data, tested twice - only the adjusted test is
+valid</caption>
+<colgroup>
+<col width="56%" />
+<col width="8%" />
+<col width="2%" />
+<col width="5%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Test</th>
+<th align="right">Chi-squared</th>
+<th align="right">df</th>
+<th align="right">p-value</th>
+<th align="left">Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Naive: every number expected equally often (ignores
+pool changes)</td>
+<td align="right">154.6</td>
+<td align="right">11</td>
+<td align="right">1.7e-27</td>
+<td align="left">“Significant” - but it is an artifact</td>
+</tr>
+<tr class="even">
+<td align="left">Exposure-adjusted: expectation counts only draws where
+the number was in the pool</td>
+<td align="right">8.1</td>
+<td align="right">11</td>
+<td align="right">0.71</td>
+<td align="left">Perfectly consistent with a fair machine</td>
+</tr>
+</tbody>
+</table>
+<p>The apparent structure was never in the balls; it was in the
+bookkeeping. This is the single biggest correction to take away for the
+frequency charts elsewhere on this site.</p>
+</div>
+<div id="are-any-main-numbers-genuinely-hot" class="section level2">
+<h2>3. Are Any Main Numbers Genuinely Hot?</h2>
+<p>The main-number format (5 out of 50) has never changed, so here raw
+counts <em>are</em> fair to compare. The frequency pages rank “hottest”
+and “coldest” numbers — but is the spread between them bigger than pure
+chance would produce? Under a fair machine each number should appear
+about 82.8 times, with a 95% chance band of roughly ±17:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>main_obs <span class="ot">&lt;-</span> <span class="fu">tabulate</span>(<span class="fu">as.integer</span>(mains), <span class="at">nbins =</span> <span class="dv">50</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>expected_main <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="dv">50</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>band <span class="ot">&lt;-</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(n <span class="sc">*</span> <span class="fl">0.1</span> <span class="sc">*</span> <span class="fl">0.9</span>) <span class="co"># binomial sd of one number&#39;s count over n draws</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>main_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">number =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="at">count =</span> main_obs)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>outside <span class="ot">&lt;-</span> <span class="fu">sum</span>(main_df<span class="sc">$</span>count <span class="sc">&lt;</span> expected_main <span class="sc">-</span> band <span class="sc">|</span> main_df<span class="sc">$</span>count <span class="sc">&gt;</span> expected_main <span class="sc">+</span> band)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>chisq_main <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(main_obs)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="fu">ggplot</span>(main_df, <span class="fu">aes</span>(<span class="at">x =</span> number, <span class="at">y =</span> count)) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="fu">ifelse</span>(main_df<span class="sc">$</span>count <span class="sc">&lt;</span> expected_main <span class="sc">-</span> band <span class="sc">|</span> main_df<span class="sc">$</span>count <span class="sc">&gt;</span> expected_main <span class="sc">+</span> band,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>        <span class="st">&quot;firebrick&quot;</span>, <span class="st">&quot;skyblue&quot;</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    )) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> expected_main, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(expected_main <span class="sc">-</span> band, expected_main <span class="sc">+</span> band), <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> <span class="st">&quot;grey30&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Main Number Counts vs the 95% Chance Band&quot;</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>            <span class="st">&quot;%d of 50 numbers fall outside the band - about %.0f expected by pure chance&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>            outside, <span class="dv">50</span> <span class="sc">*</span> <span class="fl">0.05</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>        ),</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Main number (1-50)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Appearances&quot;</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-5-1.png" width="960" /></p>
+<p>The result: 1 number(s) poke marginally outside the band, versus ~2-3
+expected as false positives from chance alone. The formal chi-squared
+test across all 50 numbers gives χ² = 31.2 on 49 degrees of freedom,
+<strong>p = 0.98</strong> — not even close to significant. The gap
+between the “hottest” number (20, seen 99 times) and the “coldest” (48,
+seen 65 times) is exactly the spread a perfectly fair machine produces
+over 828 draws. Hot and cold rankings carry <strong>zero</strong> signal
+about the next draw.</p>
+</div>
+<div id="the-due-number-fallacy-tested-on-this-data"
+class="section level2">
+<h2>4. The “Due Number” Fallacy, Tested on This Data</h2>
+<p>The most seductive prediction idea: “number X hasn’t appeared for
+ages, it must be due.” If that were true, waiting times between a
+number’s appearances would be <em>shorter</em> than the memoryless
+ideal. Each number has a 5/50 = 10% chance per draw, so under true
+randomness gaps should follow a geometric distribution with mean 10:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>gap_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="cf">function</span>(x) <span class="fu">diff</span>(<span class="fu">which</span>(<span class="fu">rowSums</span>(mains <span class="sc">==</span> x) <span class="sc">&gt;</span> <span class="dv">0</span>)))</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>gaps <span class="ot">&lt;-</span> <span class="fu">unlist</span>(gap_list)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>gap_counts <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">table</span>(gaps), <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>gap_counts<span class="sc">$</span>gaps <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(gap_counts<span class="sc">$</span>gaps)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>geo <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="at">gap =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">max</span>(gaps),</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="at">expected =</span> <span class="fu">length</span>(gaps) <span class="sc">*</span> <span class="fu">dgeom</span>(<span class="dv">0</span><span class="sc">:</span>(<span class="fu">max</span>(gaps) <span class="sc">-</span> <span class="dv">1</span>), <span class="at">prob =</span> <span class="fl">0.1</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">data =</span> gap_counts, <span class="fu">aes</span>(<span class="at">x =</span> gaps, <span class="at">y =</span> Freq), <span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">data =</span> geo, <span class="fu">aes</span>(<span class="at">x =</span> gap, <span class="at">y =</span> expected), <span class="at">color =</span> <span class="st">&quot;firebrick&quot;</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Waiting Times Between a Number&#39;s Appearances vs the Memoryless Ideal&quot;</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>            <span class="st">&quot;%d observed gaps, mean %.1f draws (theory: 10.0) - the red curve is the geometric distribution&quot;</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>            <span class="fu">length</span>(gaps), <span class="fu">mean</span>(gaps)</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>        ),</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Draws between consecutive appearances of the same number&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<p>The observed gaps hug the geometric curve, including its long tail —
+the longest drought in the dataset is 78 draws. And here is the direct
+backtest of “due”: across the whole history, every time a number had
+been absent for <strong>15 or more draws</strong>, did it hit the very
+next draw more than the baseline 10%?</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>last_seen <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_integer_</span>, <span class="dv">50</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>overdue_trials <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>overdue_hits <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="cf">if</span> (i <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>        gap_now <span class="ot">&lt;-</span> (i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">-</span> last_seen</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>        over <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="sc">!</span><span class="fu">is.na</span>(last_seen) <span class="sc">&amp;</span> gap_now <span class="sc">&gt;=</span> <span class="dv">15</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>        overdue_trials <span class="ot">&lt;-</span> overdue_trials <span class="sc">+</span> <span class="fu">length</span>(over)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>        overdue_hits <span class="ot">&lt;-</span> overdue_hits <span class="sc">+</span> <span class="fu">length</span>(<span class="fu">intersect</span>(over, mains[i, ]))</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>    }</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    last_seen[mains[i, ]] <span class="ot">&lt;-</span> i</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>}</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>overdue_now <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">number =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="at">draws_since =</span> n <span class="sc">-</span> <span class="fu">sapply</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    <span class="cf">function</span>(x) <span class="fu">max</span>(<span class="fu">which</span>(<span class="fu">rowSums</span>(mains <span class="sc">==</span> x) <span class="sc">&gt;</span> <span class="dv">0</span>))</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>))</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>overdue_now <span class="ot">&lt;-</span> <span class="fu">head</span>(overdue_now[<span class="fu">order</span>(<span class="sc">-</span>overdue_now<span class="sc">$</span>draws_since), ], <span class="dv">6</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(overdue_now,</span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    <span class="at">caption =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>        <span class="st">&quot;Most overdue main numbers as of the last draw in the dataset (%s)&quot;</span>,</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>        <span class="fu">format</span>(<span class="fu">max</span>(results<span class="sc">$</span>draw_date), <span class="st">&quot;%Y-%m-%d&quot;</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>    ),</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Main number&quot;</span>, <span class="st">&quot;Draws since last seen&quot;</span>),</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>    <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Most overdue main numbers as of the last draw in the dataset
+(2025-02-25)</caption>
+<thead>
+<tr class="header">
+<th align="right">Main number</th>
+<th align="right">Draws since last seen</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">50</td>
+</tr>
+<tr class="even">
+<td align="right">13</td>
+<td align="right">33</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">27</td>
+</tr>
+<tr class="even">
+<td align="right">24</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">23</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">21</td>
+</tr>
+</tbody>
+</table>
+<p>Result: overdue numbers hit the next draw 833 times in 8,366
+opportunities = <strong>9.96%</strong>, against a pure-chance baseline
+of 10.00%. Being overdue changes nothing. The numbers at the top of the
+table above are exactly as likely as any other number next draw:
+10%.</p>
+</div>
+<div id="do-draws-remember-the-previous-draw" class="section level2">
+<h2>5. Do Draws Remember the Previous Draw?</h2>
+<p>Two quick memory checks the other pages never run. First, how many
+main numbers repeat from one draw to the next? If draws are independent,
+the count of repeats follows a hypergeometric distribution with mean
+0.5:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>rep_counts <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">2</span><span class="sc">:</span>n, <span class="cf">function</span>(i) <span class="fu">length</span>(<span class="fu">intersect</span>(mains[i, ], mains[i <span class="sc">-</span> <span class="dv">1</span>, ])))</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>rep_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="at">k =</span> <span class="fu">factor</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">5</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="at">Observed =</span> <span class="fu">as.integer</span>(<span class="fu">table</span>(<span class="fu">factor</span>(rep_counts, <span class="at">levels =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">5</span>))),</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="at">Expected =</span> <span class="fu">dhyper</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">45</span>, <span class="dv">5</span>) <span class="sc">*</span> (n <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>k, <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="fu">ggplot</span>(rep_df, <span class="fu">aes</span>(<span class="at">x =</span> k, <span class="at">y =</span> count, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> <span class="st">&quot;orchid&quot;</span>, <span class="st">&quot;Expected&quot;</span> <span class="ot">=</span> <span class="st">&quot;grey40&quot;</span>), <span class="at">name =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Numbers Repeating From the Previous Draw&quot;</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>            <span class="st">&quot;Mean %.3f repeats per draw (theory: 0.500) - the distribution matches the hypergeometric exactly&quot;</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>            <span class="fu">mean</span>(rep_counts)</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>        ),</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;How many of the 5 main numbers also appeared in the previous draw&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of draws&quot;</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-8-1.png" width="960" /></p>
+<p>Second, serial correlation: does a high-sum draw tend to follow a
+high-sum draw?</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>draw_sums <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(mains)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">cor</span>(draw_sums[<span class="sc">-</span><span class="dv">1</span>], draw_sums[<span class="sc">-</span>n])</span></code></pre></div>
+<p>The lag-1 autocorrelation of the draw sums is
+<strong>0.0047</strong>, comfortably inside the ±0.068 band that pure
+noise would produce. The machine has no memory — neither at the level of
+individual balls nor at the level of whole draws.</p>
+</div>
+<div id="the-ultimate-test-backtesting-five-prediction-strategies"
+class="section level2">
+<h2>6. The Ultimate Test: Backtesting Five Prediction Strategies</h2>
+<p>Statistical tests can feel abstract, so here is the concrete version.
+We walk through history draw by draw: at each point, five popular
+strategies pick 5 main numbers using <strong>only information available
+before that draw</strong>, and we count how many they match. Any real
+predictive signal must beat the theoretical chance level of 0.500
+matches per draw:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="dv">105</span> <span class="co"># first predicted draw; the preceding 104 draws (2 years) are the warm-up history</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>strategies <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="st">&quot;Hot (last 52 draws)&quot;</span>, <span class="st">&quot;Cold (last 52 draws)&quot;</span>, <span class="st">&quot;Hot (all history)&quot;</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="st">&quot;Most overdue&quot;</span>, <span class="st">&quot;Repeat previous draw&quot;</span>, <span class="st">&quot;Random picks&quot;</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>bt <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA_real_</span>, <span class="at">nrow =</span> n <span class="sc">-</span> start <span class="sc">+</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="fu">length</span>(strategies), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="cn">NULL</span>, strategies))</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>freq_all <span class="ot">&lt;-</span> <span class="fu">tabulate</span>(<span class="fu">as.integer</span>(mains[<span class="dv">1</span><span class="sc">:</span>(start <span class="sc">-</span> <span class="dv">1</span>), ]), <span class="at">nbins =</span> <span class="dv">50</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>last_seen <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="dt">L</span>, <span class="dv">50</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(start <span class="sc">-</span> <span class="dv">1</span>)) last_seen[mains[i, ]] <span class="ot">&lt;-</span> i</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>row <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> start<span class="sc">:</span>n) {</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>    row <span class="ot">&lt;-</span> row <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>    freq_window <span class="ot">&lt;-</span> <span class="fu">tabulate</span>(<span class="fu">as.integer</span>(mains[(i <span class="sc">-</span> <span class="dv">52</span>)<span class="sc">:</span>(i <span class="sc">-</span> <span class="dv">1</span>), ]), <span class="at">nbins =</span> <span class="dv">50</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>    picks <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>        <span class="fu">order</span>(<span class="sc">-</span>freq_window)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="co"># hottest in the last year</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>        <span class="fu">order</span>(freq_window)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="co"># coldest in the last year</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>        <span class="fu">order</span>(<span class="sc">-</span>freq_all)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="co"># hottest over all history</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>        <span class="fu">order</span>(last_seen)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="co"># longest absent</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>        mains[i <span class="sc">-</span> <span class="dv">1</span>, ], <span class="co"># previous draw repeats</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>        <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="dv">5</span>) <span class="co"># random baseline</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>    )</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>    bt[row, ] <span class="ot">&lt;-</span> <span class="fu">sapply</span>(picks, <span class="cf">function</span>(p) <span class="fu">length</span>(<span class="fu">intersect</span>(p, mains[i, ])))</span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>    freq_all[mains[i, ]] <span class="ot">&lt;-</span> freq_all[mains[i, ]] <span class="sc">+</span> <span class="dv">1</span><span class="dt">L</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>    last_seen[mains[i, ]] <span class="ot">&lt;-</span> i</span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>}</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>bt_summary <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>    <span class="at">Strategy =</span> <span class="fu">colnames</span>(bt),</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>    <span class="st">`</span><span class="at">Mean matches per draw</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.3f&quot;</span>, <span class="fu">colMeans</span>(bt)),</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>    <span class="st">`</span><span class="at">95% CI</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">&quot;± %.3f&quot;</span>, <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">apply</span>(bt, <span class="dv">2</span>, sd) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">nrow</span>(bt))),</span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a>    <span class="st">`</span><span class="at">Draws with at least 1 match</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f%%&quot;</span>, <span class="dv">100</span> <span class="sc">*</span> <span class="fu">colMeans</span>(bt <span class="sc">&gt;=</span> <span class="dv">1</span>)),</span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a>    <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>)</span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(bt_summary,</span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a>    <span class="at">caption =</span> <span class="fu">sprintf</span>(</span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a>        <span class="st">&quot;Walk-forward backtest over %d draws. Chance level: 0.500 mean matches, %.1f%% with at least one match&quot;</span>,</span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a>        <span class="fu">nrow</span>(bt), <span class="dv">100</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">choose</span>(<span class="dv">45</span>, <span class="dv">5</span>) <span class="sc">/</span> <span class="fu">choose</span>(<span class="dv">50</span>, <span class="dv">5</span>))</span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a>    ),</span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a>    <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>)</span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Walk-forward backtest over 724 draws. Chance level: 0.500 mean
+matches, 42.3% with at least one match</caption>
+<colgroup>
+<col width="26%" />
+<col width="27%" />
+<col width="10%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Strategy</th>
+<th align="right">Mean matches per draw</th>
+<th align="right">95% CI</th>
+<th align="right">Draws with at least 1 match</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hot (last 52 draws)</td>
+<td align="right">0.490</td>
+<td align="right">± 0.046</td>
+<td align="right">42.1%</td>
+</tr>
+<tr class="even">
+<td align="left">Cold (last 52 draws)</td>
+<td align="right">0.483</td>
+<td align="right">± 0.046</td>
+<td align="right">41.3%</td>
+</tr>
+<tr class="odd">
+<td align="left">Hot (all history)</td>
+<td align="right">0.467</td>
+<td align="right">± 0.047</td>
+<td align="right">38.7%</td>
+</tr>
+<tr class="even">
+<td align="left">Most overdue</td>
+<td align="right">0.499</td>
+<td align="right">± 0.047</td>
+<td align="right">42.1%</td>
+</tr>
+<tr class="odd">
+<td align="left">Repeat previous draw</td>
+<td align="right">0.490</td>
+<td align="right">± 0.047</td>
+<td align="right">41.0%</td>
+</tr>
+<tr class="even">
+<td align="left">Random picks</td>
+<td align="right">0.537</td>
+<td align="right">± 0.050</td>
+<td align="right">43.9%</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>ci <span class="ot">&lt;-</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">apply</span>(bt, <span class="dv">2</span>, sd) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">nrow</span>(bt))</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>bt_plot <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">strategy =</span> <span class="fu">factor</span>(<span class="fu">colnames</span>(bt), <span class="at">levels =</span> <span class="fu">colnames</span>(bt)), <span class="at">mean =</span> <span class="fu">colMeans</span>(bt), <span class="at">ci =</span> ci)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="fu">ggplot</span>(bt_plot, <span class="fu">aes</span>(<span class="at">x =</span> strategy, <span class="at">y =</span> mean)) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean <span class="sc">-</span> ci, <span class="at">ymax =</span> mean <span class="sc">+</span> ci), <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;firebrick&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;No Strategy Beats the Red Line of Pure Chance&quot;</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;Mean main-number matches per draw with 95% confidence intervals; chance = 0.500&quot;</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Mean matches per draw&quot;</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">20</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
+<p>Every strategy — including the ones people pay for in “lottery
+systems” — lands within noise of 0.500, and in this run the purely
+random picks happen to edge out all four “informed” strategies. That is
+not a joke; it is the point. <strong>Nothing computable from past draws
+moves the odds of the next one.</strong></p>
+</div>
+<div id="what-you-can-predict-the-pot-not-the-balls"
+class="section level2">
+<h2>7. What You <em>Can</em> Predict: The Pot, Not the Balls</h2>
+<p>Here is the constructive twist. The winning numbers are
+unpredictable, but the <strong>pot</strong> — the thing you actually
+care about — is largely governed by known mechanics, and this dataset is
+one column short of modelling it.</p>
+<div id="rollovers-are-almost-forecastable" class="section level3">
+<h3>Rollovers are (almost) forecastable</h3>
+<p>The jackpot rolls over when nobody matches 5+2. The probability of
+that depends only on jackpot odds (fixed by the rules era, see Section
+1) and tickets sold:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>odds_by_era <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>    <span class="st">&quot;2012-2014 rules (1 in 59.3M)&quot;</span> <span class="ot">=</span> <span class="fu">choose</span>(<span class="dv">50</span>, <span class="dv">5</span>) <span class="sc">*</span> <span class="fu">choose</span>(<span class="dv">8</span>, <span class="dv">2</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="st">&quot;2014-2022 rules (1 in 95.3M)&quot;</span> <span class="ot">=</span> <span class="fu">choose</span>(<span class="dv">50</span>, <span class="dv">5</span>) <span class="sc">*</span> <span class="fu">choose</span>(<span class="dv">10</span>, <span class="dv">2</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="st">&quot;Current rules (1 in 139.8M)&quot;</span> <span class="ot">=</span> <span class="fu">choose</span>(<span class="dv">50</span>, <span class="dv">5</span>) <span class="sc">*</span> <span class="fu">choose</span>(<span class="dv">12</span>, <span class="dv">2</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>rollover <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">tickets =</span> <span class="fu">seq</span>(<span class="fl">5e6</span>, <span class="fl">60e6</span>, <span class="at">by =</span> <span class="fl">2.5e5</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">era =</span> <span class="fu">names</span>(odds_by_era),</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>)</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>rollover<span class="sc">$</span>era <span class="ot">&lt;-</span> <span class="fu">factor</span>(rollover<span class="sc">$</span>era, <span class="at">levels =</span> <span class="fu">names</span>(odds_by_era))</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>rollover<span class="sc">$</span>p_rollover <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span> <span class="sc">/</span> odds_by_era[<span class="fu">as.character</span>(rollover<span class="sc">$</span>era)])<span class="sc">^</span>rollover<span class="sc">$</span>tickets</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="fu">ggplot</span>(rollover, <span class="fu">aes</span>(<span class="at">x =</span> tickets <span class="sc">/</span> <span class="fl">1e6</span>, <span class="at">y =</span> p_rollover, <span class="at">color =</span> era)) <span class="sc">+</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">paste0</span>(<span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> x), <span class="st">&quot;%&quot;</span>), <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;grey60&quot;</span>, <span class="st">&quot;steelblue&quot;</span>, <span class="st">&quot;firebrick&quot;</span>), <span class="at">name =</span> <span class="st">&quot;&quot;</span>) <span class="sc">+</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;Probability the Jackpot Rolls Over, by Tickets Sold&quot;</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">&quot;The 2022 rule change made rollovers far more likely - which is exactly why pots now climb to the 120M cap&quot;</span>,</span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">&quot;Tickets sold (millions)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;P(no jackpot winner)&quot;</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<p><img src="predictive-analysis_files/figure-html/unnamed-chunk-12-1.png" width="960" /></p>
+<p>With ~30 million tickets sold, the current rules roll the jackpot
+over about 81% of the time — under the 2012 rules that figure was 60%.
+Long rollover chains, and therefore giant pots, are a designed-in
+feature of the current format, not luck. Given the current pot, the
+rollover streak and a sales estimate, next-draw pot size is a genuinely
+forecastable quantity — the kind of prediction this dataset
+<em>could</em> support but currently cannot:</p>
+<div class="info-box">
+<p><strong>The missing column:</strong> this CSV records only dates and
+numbers. To actually model the pot, the scraper should also capture per
+draw: <em>jackpot amount</em>, <em>number of jackpot winners</em>, and
+ideally <em>prize-tier winner counts</em> (a proxy for tickets sold).
+With those three columns, “predict the next pot” becomes a real
+regression problem with the rollover curve above as its backbone.</p>
+</div>
+</div>
+<div id="the-one-lever-a-player-controls-dont-share"
+class="section level3">
+<h3>The one lever a player controls: don’t share</h3>
+<p>Since every combination is equally likely, the only quantity a player
+can influence is the <strong>expected pot share if they win</strong> —
+by avoiding combinations that many other people play. Players worldwide
+over-pick calendar numbers (1-31) and neat patterns. This dataset shows
+how often that habit gets rewarded: in 8.7% of all draws every main
+number was 31 or below (theory predicts 8.0%), and in 36.4% of draws at
+least 4 of the 5 numbers were date-compatible. On those nights,
+date-players win <em>together</em> — and split. Picking some numbers
+above 31 and avoiding tidy patterns does not change the odds of winning,
+but on average it means sharing with fewer people if it happens.</p>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<div class="info-box">
+<strong>What this page established:</strong>
+<ul>
+<li>
+The dataset contains <strong>three different rule eras</strong>; pooled
+frequency charts are biased, and euro numbers 9-12 are new, not cold.
+Exposure-adjusted, every ball pool is statistically uniform.
+</li>
+<li>
+<strong>Hot/cold, due-number, and repeat-based strategies all
+fail</strong> formal tests and a walk-forward backtest — each performs
+exactly at the chance level of 0.5 matches per draw.
+</li>
+<li>
+The draw machine is memoryless: gaps are geometric, repeats are
+hypergeometric, autocorrelation is zero.
+</li>
+<li>
+The genuinely predictable object is the <strong>pot itself</strong>
+(rollover mechanics + sales), and the dataset needs jackpot-amount and
+winner-count columns to model it.
+</li>
+<li>
+The only decision that pays: pick <strong>unpopular
+combinations</strong> to avoid splitting, and never spend money
+expecting positive returns.
+</li>
+</ul>
+</div>
+<div class="navigation-buttons">
+<p><a href="number-patterns.html" class="prev-button"><i class="fa fa-arrow-left"></i>
+Previous: Number Patterns</a></p>
+</div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <p class="text-muted">© 2025 Eurojackpot Analysis | Created with <a href="https://rmarkdown.rstudio.com">R Markdown</a></p>
+      </div>
+    </div>
+  </div>
+</footer> 
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

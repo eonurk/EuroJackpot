@@ -22,6 +22,9 @@ navbar:
     - text: "Number Patterns"
       icon: fa-puzzle-piece
       href: number-patterns.html
+    - text: "Predicting the Pot"
+      icon: fa-dice
+      href: predictive-analysis.html
   right:
     - icon: fa-github
       href: https://github.com/eonurk/eurojackpot

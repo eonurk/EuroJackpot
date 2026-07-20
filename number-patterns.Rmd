@@ -173,4 +173,5 @@ ggplot(heatmap_data, aes(x = pair, y = difference, fill = percentage)) +
 
 <div class="navigation-buttons">
   <a href="time-series.html" class="prev-button"><i class="fa fa-arrow-left"></i> Previous: Time Series</a>
+  <a href="predictive-analysis.html" class="next-button">Next: Predicting the Next Pot? <i class="fa fa-arrow-right"></i></a>
 </div>

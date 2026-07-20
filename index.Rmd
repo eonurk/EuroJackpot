@@ -31,6 +31,7 @@ All visualizations and calculations are implemented using R and its data visuali
 - **Number Analysis**: Detailed look at the frequency distribution of drawn numbers
 - **Temporal Observations**: How draw patterns have appeared over different time periods
 - **Statistical Insights**: Notable statistical properties within the historical data
+- **Predicting the Pot**: Formal tests and backtests of popular prediction strategies, the rule changes hiding in the data, and what actually *is* forecastable
 
 <div class="navigation-buttons">
   <a href="data-overview.html" class="next-button">Next: Data Overview <i class="fa fa-arrow-right"></i></a>
